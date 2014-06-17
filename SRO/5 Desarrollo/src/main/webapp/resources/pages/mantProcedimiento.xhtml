@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+<h:head>
+	<link type="text/css" rel="stylesheet" href="#{request.contextPath}/resources/css/estiloMant.css"/> 
+</h:head>
+
+<h:body>
+	<h:form id="form">
+	
+	
+		<p:growl id="growl" showDetail="true" life="3000" /> 
+	
+		<p:dialog id="dialogEditar" header="Editar" widgetVar="dialogEditar"
+			resizable="false" width="400" height="180" showEffect="fold" hideEffect="drop">
+			<p:messages id="messagesEditar" showDetail="true" autoUpdate="true"
+				closable="true" />
+			<h:panelGrid id="displayEditar" columns="2" cellpadding="4">
+				<h:outputText value="cie:" />
+				<h:inputText value="#{ProcedimientoBean.procedEditar.cie}" />
+
+				<h:outputText value="nombre:" />
+				<p:inputText value="#{ProcedimientoBean.procedEditar.nombre}" />
+				
+				<h:outputText value="descripcion:" />
+				<p:inputText value="#{ProcedimientoBean.procedEditar.descripcion}" />
+
+				<p:commandButton value="Editar"
+					actionListener="#{ProcedimientoBean.validarEditar}"
+					update=":form:datatablecampana, growl" oncomplete="dialogEditar.hide();" />
+
+			</h:panelGrid>
+		</p:dialog>
+
+		<p:dialog id="dialogNuevo" header="Nuevo" widgetVar="dialogNuevo"
+			resizable="false" width="400" height="180" showEffect="fold" hideEffect="drop">
+
+			<p:messages id="messagesNuevo" showDetail="true" autoUpdate="true"
+				closable="true" />
+
+			<h:panelGrid id="displayNuevo" columns="2" cellpadding="4">
+				<h:outputText value="cie:" />
+				<p:inputText value="#{ProcedimientoBean.proced.cie}" />
+				
+				<h:outputText value="nombre:" />
+				<p:inputText value="#{ProcedimientoBean.proced.nombre}" />
+				
+				<h:outputText value="descripcion:" />
+				<p:inputText value="#{ProcedimientoBean.proced.descripcion}" />
+
+				<p:commandButton value="Nuevo" update=":form:datatablecampana, growl"
+					actionListener="#{ProcedimientoBean.validarNuevo}"
+					oncomplete="dialogNuevo.hide();" />
+			</h:panelGrid>
+		</p:dialog>
+		
+		
+		<p:panel>
+			
+			 <f:facet name="header" >
+
+			 	<p:commandButton styleClass="back" value="Regresar" icon="ui-icon-circle-arrow-w" action="menuPrincipal" ajax="false"/>
+			 	<p id="par">LISTA DE PROCEDIMIENTOS</p>
+			 	
+                <div id="reloj">
+					<p:clock pattern="HH:mm:ss - dd / MM / yyyy" />
+				</div>
+            </f:facet>
+			
+			<div id="cuerpo">
+
+				<p:dataTable id="datatablecampana" var="c" widgetVar="dt"
+					value="#{ProcedimientoBean.procedimientos}" rowKey="#{c.cie}"
+					selection="#{ProcedimientoBean.procedNuevo}" selectionMode="single"
+					styleClass="datatable_style_general" paginator="true" rows="10"  
+		                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+		                 rowsPerPageTemplate="2,5,10" >
+		
+					<f:facet name="header">
+		
+						<p:commandButton id="viewNuevo" styleClass="botonPeque" value="Nuevo" icon="ui-icon-document"
+							update=":form:displayNuevo" oncomplete="dialogNuevo.show()" 
+							actionListener="#{ProcedimientoBean.limpiarForms}"/>
+		
+		
+						<p:commandButton id="viewEditar" styleClass="botonPeque" value="Editar"
+							icon="ui-icon-search" update=":form:displayEditar, :form:growl"
+							actionListener="#{ProcedimientoBean.editarEvent}" />
+							
+						<p:commandButton id="EliminarRegistro" styleClass="botonPeque" value="Eliminar"
+							icon="ui-icon-closethick" update=":form:displayEditar, :form:growl"
+							actionListener="#{ProcedimientoBean.eliminarEvent}" />
+		
+					</f:facet>
+
+					<p:column styleClass="columna" headerText="CIE" filterBy="#{c.cie}"
+						footerText="CIE">
+						<h:outputText value="#{c.cie}" />
+					</p:column>
+					
+					<p:column styleClass="columna" headerText="Nombre" filterBy="#{c.nombre}"
+						footerText="Nombre">
+						<h:outputText value="#{c.nombre}" />
+					</p:column>
+					
+					<p:column styleClass="columna" headerText="Descripcion" filterBy="#{c.descripcion}"
+						footerText="Descripcion">
+						<h:outputText value="#{c.descripcion}" />
+					</p:column>
+					
+					<f:facet name="footer">
+					</f:facet>
+				</p:dataTable>
+			</div>
+
+		</p:panel>
+
+		<p:dialog id="modalDialog" header="CONFIRMACION" widgetVar="dlg2" modal="true" height="150" width="400" closable="false" resizable="false">  
+	    	<p:messages id="messages" showDetail="true" autoUpdate="true"
+					closable="false" /> 
+			<p:commandButton value="OK" onclick="dlg2.hide()"/> 
+		</p:dialog> 
+		<p:confirmDialog id="confirmDialog" message="¿Esta seguro de esta accion?"  
+                header="Eliminar Registro" severity="alert" widgetVar="confirmation">  
+                  
+        <p:commandButton id="confirm" value="Si" update=":form:datatablecampana, growl" oncomplete="confirmation.hide()"  
+                    actionListener="#{ProcedimientoBean.validarEliminar}" />  
+        <p:commandButton id="decline" value="No" onclick="confirmation.hide()" type="button" />   
+                  
+    	</p:confirmDialog>  
+
+	</h:form>
+	
+
+</h:body>
+
+
+</html>
