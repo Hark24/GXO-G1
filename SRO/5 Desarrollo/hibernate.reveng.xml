@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-reverse-engineering-3.0.dtd" >
+
+<hibernate-reverse-engineering>
+  <table-filter match-catalog="sro" match-name="profesional"/> 
+  <table-filter match-catalog="sro" match-name="profesional_has_reserva"/>  
+  <table-filter match-catalog="sro" match-name="paciente"/>
+  <table-filter match-catalog="sro" match-name="procedimiento"/>
+  <table-filter match-catalog="sro" match-name="reserva"/>
+  <table-filter match-catalog="sro" match-name="sala"/>
+</hibernate-reverse-engineering>
