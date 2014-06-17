@@ -1,0 +1,184 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+<h:head>
+	<link type="text/css" rel="stylesheet" href="#{request.contextPath}/resources/css/estiloMant.css"/> 
+</h:head>
+
+<h:body>
+	<h:form id="form">
+	
+	
+		<p:growl id="growl" showDetail="true" life="3000" /> 
+	
+		<p:dialog id="dialogEditar" header="Editar" widgetVar="dialogEditar"
+			resizable="false" width="450" height="230" showEffect="fold" hideEffect="drop">
+			
+			<p:messages id="messagesEditar" showDetail="true" autoUpdate="true"
+				closable="true" />
+			<h:panelGrid id="displayEditar" columns="2" cellpadding="4">
+				<h:outputText value="historia clinica:" />
+				<h:inputText value="#{PacienteBean.pacienteEditar.histClinica}" />
+
+				<h:outputText value="nombres:" />
+				<p:inputText value="#{PacienteBean.pacienteEditar.nombres}" />
+				
+				<h:outputText value="apellidos:" />
+				<p:inputText value="#{PacienteBean.pacienteEditar.apellidos}" />
+				
+				<h:outputText value="fecha de nacimiento:" />
+				<p:calendar value="#{PacienteBean.pacienteEditar.fechNac}" id="calendarEditar" 
+					navigator="true" display="inline" effect="slide" yearRange="c-100:c-0"/>
+				
+				<p:commandButton value="Editar"
+					actionListener="#{PacienteBean.validarEditar}"
+					update=":form:datatablecampana, growl" oncomplete="dialogEditar.hide();" />
+
+			</h:panelGrid>
+		</p:dialog>
+
+		<p:dialog id="dialogNuevo" header="Nuevo" widgetVar="dialogNuevo"
+			resizable="false" width="450" height="230" showEffect="fold" hideEffect="drop">
+
+			<p:messages id="messagesNuevo" showDetail="true" autoUpdate="true"
+				closable="true" />
+
+			<h:panelGrid id="displayNuevo" columns="2" cellpadding="4">
+				<h:outputText value="historia clinica:" />
+				<p:inputText value="#{PacienteBean.paciente.histClinica}" />
+				
+				<h:outputText value="nombres:" />
+				<p:inputText value="#{PacienteBean.paciente.nombres}" />
+				
+				<h:outputText value="apellidos:" />
+				<p:inputText value="#{PacienteBean.paciente.apellidos}" />
+				
+				<h:outputText value="fecha de nacimiento:" />
+				<p:calendar value="#{PacienteBean.paciente.fechNac}" id="calendarNuevo" 
+					navigator="true" display="inline" effect="slide" yearRange="c-100:c-0"/>
+	
+				<p:commandButton value="Nuevo" update=":form:datatablecampana, growl"
+					actionListener="#{PacienteBean.validarNuevo}"
+					oncomplete="dialogNuevo.hide();" />
+			</h:panelGrid>
+		</p:dialog>
+		
+		
+		<p:panel>
+			
+			 <f:facet name="header" >
+
+			 	<p:commandButton styleClass="back" value="Regresar" icon="ui-icon-circle-arrow-w" action="menuPrincipal" ajax="false"/>
+			 	<p id="par">LISTA DE PACIENTES</p>
+			 	
+                <div id="reloj">
+					<p:clock pattern="HH:mm:ss - dd / MM / yyyy" />
+				</div>
+            </f:facet>
+			
+			<div id="cuerpo">
+
+				<p:dataTable id="datatablecampana" var="c" widgetVar="dt"
+					value="#{PacienteBean.pacientes}" rowKey="#{c.histClinica}"
+					selection="#{PacienteBean.pacienteNuevo}" selectionMode="single"
+					styleClass="datatable_style_general" paginator="true" rows="10"  
+		                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+		                 rowsPerPageTemplate="2,5,10" >
+		
+					<f:facet name="header">
+		
+						<p:commandButton id="viewNuevo" styleClass="botonPeque" value="Nuevo" icon="ui-icon-document"
+							update=":form:displayNuevo" oncomplete="dialogNuevo.show()" 
+							actionListener="#{PacienteBean.limpiarForms}"/>
+		
+						<p:commandButton id="viewEditar" styleClass="botonPeque" value="Editar"
+							icon="ui-icon-search" update=":form:displayEditar, :form:growl"
+							actionListener="#{PacienteBean.editarEvent}" />
+							
+						<p:commandButton id="EliminarRegistro" styleClass="botonPeque" value="Eliminar"
+							icon="ui-icon-closethick" update=":form:displayEditar, :form:growl"
+							actionListener="#{PacienteBean.eliminarEvent}" />
+						
+						<h:commandLink>  
+				            <p:commandButton id="xlsExport" styleClass="botonPeque" value="excel"/>  
+				            <p:dataExporter type="xls" target="datatablecampana" fileName="Pacientes" postProcessor="#{TableBean.postProcessXLS}"/>  
+				        </h:commandLink>
+				        
+					</f:facet>
+
+					<p:column styleClass="columna" headerText="Historia Clinica" filterBy="#{c.histClinica}"
+						footerText="Historia Clinica">
+						<f:facet name="header">
+							<h:outputText value="Historia clinica"/>
+						</f:facet>
+						<h:outputText value="#{c.histClinica}" />
+					</p:column>
+					
+					<p:column styleClass="columna" headerText="Nnombres" filterBy="#{c.nombres}"
+						footerText="Nombres">
+						<f:facet name="header">
+							<h:outputText value="Nombres"/>
+						</f:facet>
+						<h:outputText value="#{c.nombres}" />
+					</p:column>
+					
+					<p:column styleClass="columna" headerText="Apellidos" filterBy="#{c.apellidos}"
+						footerText="Apellidos">
+						<f:facet name="header">
+							<h:outputText value="Apellidos"/>
+						</f:facet>
+						<h:outputText value="#{c.apellidos}" />
+					</p:column>
+					
+					<p:column styleClass="columna" headerText="Edad" filterBy="#{c.edad}"
+						footerText="Edad">
+						<f:facet name="header">
+							<h:outputText value="Edad"/>
+						</f:facet>
+						<h:outputText value="#{c.edad}" />
+					</p:column>
+					
+					<p:column styleClass="columna" headerText="Fecha de nac" filterBy="#{c.fechNac}"
+						footerText="Fecha de nac">
+						<f:facet name="header">
+							<h:outputText value="Fecha de Nac"/>
+						</f:facet>
+						<h:outputText value="#{c.fechNac}" >
+							<f:convertDateTime type="date" pattern="dd-MM-yyyy"/>
+						</h:outputText>
+					</p:column>
+					
+					<f:facet name="footer">
+					</f:facet>
+				</p:dataTable>
+			</div>
+
+		</p:panel>
+
+		<p:dialog id="modalDialog" header="CONFIRMACION" widgetVar="dlg2" modal="true" height="150" width="400" closable="false" resizable="false">  
+	    	<p:messages id="messages" showDetail="true" autoUpdate="true"
+					closable="false" /> 
+			<p:commandButton value="OK" onclick="dlg2.hide()"/> 
+		</p:dialog> 
+		<p:confirmDialog id="confirmDialog" message="¿Esta seguro de esta accion?"  
+                header="Eliminar Registro" severity="alert" widgetVar="confirmation">  
+                  
+        <p:commandButton id="confirm" value="Si" update=":form:datatablecampana, growl" oncomplete="confirmation.hide()"  
+                    actionListener="#{PacienteBean.validarEliminar}" />  
+        <p:commandButton id="decline" value="No" onclick="confirmation.hide()" type="button" />   
+                  
+    	</p:confirmDialog>  
+
+	</h:form>
+	
+
+</h:body>
+
+
+</html>
