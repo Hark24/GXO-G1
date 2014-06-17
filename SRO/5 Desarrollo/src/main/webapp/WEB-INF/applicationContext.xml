@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd">
+
+	<!-- Beans Declaration -->
+	<bean id="Profesional" class="org.corp.sro.domain.Profesional" />
+	<bean id="Paciente" class="org.corp.sro.domain.Paciente" />
+	<bean id="Procedimiento" class="org.corp.sro.domain.Procedimiento" />
+	<bean id="Reserva" class="org.corp.sro.domain.Reserva" />
+	<bean id="Sala" class="org.corp.sro.domain.Sala" />
+
+	<!-- Dao Declaration -->
+	<bean id="PacienteDAO" class="org.corp.sro.dao.PacienteDao">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	<bean id="ProfesionalDAO" class="org.corp.sro.dao.ProfesionalDao">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	<bean id="ProcedimientoDAO" class="org.corp.sro.dao.ProcedimientoDao">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	<bean id="SalaDAO" class="org.corp.sro.dao.SalaDao">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	<bean id="ReservaDAO" class="org.corp.sro.dao.ReservaDao">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	
+	<!-- Service Declaration -->
+	<bean id="PacienteService" class="org.corp.sro.service.PacienteService">
+		<property name="pacienteDAO" ref="PacienteDAO" />
+	</bean>
+	<bean id="ProcedimientoService" class="org.corp.sro.service.ProcedimientoService">
+		<property name="procedimientoDAO" ref="ProcedimientoDAO" />
+	</bean>
+	<bean id="SalaService" class="org.corp.sro.service.SalaService">
+		<property name="salaDAO" ref="SalaDAO" />
+	</bean>
+	<bean id="ProfesionalService" class="org.corp.sro.service.ProfesionalService">
+		<property name="profesionalDAO" ref="ProfesionalDAO" />
+	</bean>
+	<bean id="ReservaService" class="org.corp.sro.service.ReservaService">
+		<property name="reservaDAO" ref="ReservaDAO" />
+	</bean>
+	
+	<!-- Data Source Declaration -->
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+      <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+      <property name="url" value="jdbc:mysql://localhost:3306/sro"/>
+      <property name="username"  value="root"/>
+      <property name="password" value="root"/>
+    </bean>
+
+	<!-- Session Factory Declaration -->
+	<bean id="SessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="annotatedClasses">
+			<list>
+				<value>org.corp.sro.domain.Profesional</value>
+				<value>org.corp.sro.domain.Paciente</value>
+				<value>org.corp.sro.domain.Procedimiento</value>
+				<value>org.corp.sro.domain.Reserva</value>
+				<value>org.corp.sro.domain.Sala</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- Enable the configuration of transactional behavior based on annotations -->
+	<tx:annotation-driven transaction-manager="txManager" />
+
+	<!-- Transaction Manager is defined -->
+	<bean id="txManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+
+
+</beans>
