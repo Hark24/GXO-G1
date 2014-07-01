@@ -1,0 +1,397 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+<h:head>
+	<link type="text/css" rel="stylesheet" href="#{request.contextPath}/resources/tema.css"/>
+	<link type="text/css" rel="stylesheet" href="#{request.contextPath}/resources/estiloDispo.css"/>
+
+	<style type="text/css">
+	
+		.select .fc-event-skin {
+    		background: gray;
+		}
+		
+		.sala0 .fc-event-skin {
+    		background: #BAA9AF;
+    		color:black;
+		}
+		.sala1 .fc-event-skin {
+		   background: #D9D3C5;
+		   color:black;
+		}
+		.sala2 .fc-event-skin {
+		   background: #B8C6CC;
+		   color:black;
+		}
+		.sala3 .fc-event-skin {
+		   background: #BDC9BD;
+		   color:black;
+		}
+		.sala4 .fc-event-skin {
+		   background: #E3E1CC;
+		   color:black;
+		}
+		
+		
+		.columna{
+			font-family:candara;
+			font-size:16px;
+		}
+	
+	</style>
+
+	<style type="text/css">
+		.schedule .fc-event-skin {
+		    background: #96A683;
+		    font-size:20px;
+		    font-family:calibri;
+		}
+		.fc-agenda-slots{
+			background-color: #E6EDF2;
+		}
+		.fc-agenda-allday{
+			background-color: #D3DEC5;
+		}
+		.fc-header{
+			font-family:candara;
+		}
+    </style>
+	
+	<script type="text/javascript">
+		PrimeFaces.locales['es'] = {
+		    closeText: 'Cerrar',
+		    prevText: 'Anterior',
+		    nextText: 'Siguiente',
+		    monthNames: ['Enero','Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+		    monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
+		    dayNames: ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],
+		    dayNamesShort: ['Dom','Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+		    dayNamesMin: ['D','L','M','X','J','V','S'],
+		    weekHeader: 'Semana',
+		    firstDay: 1,
+		    isRTL: false,
+		    showMonthAfterYear: false,
+		    yearSuffix: '',
+		    timeOnlyTitle: 'Sólo hora',
+		    timeText: 'Tiempo',
+		    hourText: 'Hora',
+		    minuteText: 'Minuto',
+		    secondText: 'Segundo',
+		    currentText: 'Fecha actual',
+		    ampm: false,
+		    month: 'Mes',
+		    week: 'Semana',
+		    day: 'Día',
+		    allDayText : 'Todo el día'
+		};
+
+	</script>
+
+</h:head>
+
+<h:body>
+	<h:form id="form">
+		<p:growl id="growl" showDetail="true" />
+
+      <p:dialog id="dialogEditar" header="Editar" widgetVar="dialogEditar"
+			resizable="false" width="500" height="600" showEffect="clip"
+			hideEffect="fold">
+			<p:messages id="messagesEditar" showDetail="true" autoUpdate="true"
+				closable="true" />
+		<p:scrollPanel style="width:480px;height:580px"	>
+				<h:panelGrid id="displayEditar" columns="2" cellpadding="8">
+					
+					<h:outputText styleClass="columna" value="Fecha Reserva:" />
+					<p:calendar styleClass="columna"  value="#{DispoBean.reservaBean.reservaEditar.fechaIni}" id="calendarEditar" 
+						pattern="dd/MM/yyyy hh:mm a" navigator="true" display="popup" effect="slide" 
+						showOn="button" showButtonPanel="true" yearRange="c-100:c-0"/>
+						
+						
+						<h:outputText styleClass="columna"  value="Sala:" /> 
+							<p:selectOneMenu widgetVar="sala" value="#{DispoBean.reservaBean.reservaEditar.sala}" styleClass="columna"  converter="salaConverter"  >
+									<f:selectItem itemLabel="Seleccionar" styleClass="columna"  itemValue="0"/>
+									<f:selectItems value="#{DispoBean.reservaBean.salas}" var="sala" styleClass="columna"  itemLabel="#{sala.codSala}" itemValue="#{sala}" /> 		
+							</p:selectOneMenu>
+		
+						<h:outputText value="Procedimiento:" styleClass="columna"  />
+							<p:selectOneMenu widgetVar="procedimiento" value="#{DispoBean.reservaBean.reservaEditar.procedimiento}" styleClass="columna" converter="procedimientoConverter" filter="true" filterMatchMode="startsWith">
+									<f:selectItem itemLabel="Seleccionar" styleClass="columna"  itemValue="0"/>
+									<f:selectItems value="#{DispoBean.reservaBean.procedimientos}" var="proc"  styleClass="columna" itemLabel="#{proc.nombre}" itemValue="#{proc}" /> 		
+							</p:selectOneMenu>
+		
+						<h:outputText value="Paciente:"  styleClass="columna" />
+						
+							<p:selectOneMenu widgetVar="paciente" value="#{DispoBean.reservaBean.reservaEditar.paciente}"  styleClass="columna" converter="pacienteConverter"  filter="true" filterMatchMode="startsWith">
+								<f:selectItem itemLabel="Seleccionar" styleClass="columna"  itemValue="0"/>
+								<f:selectItems value="#{DispoBean.reservaBean.pacientes}" var="pacie"  styleClass="columna" itemLabel="#{pacie.apellidos}" itemValue="#{pacie}" /> 		
+							</p:selectOneMenu>
+					 
+						<h:outputText value="Cirujano:"  styleClass="columna" />
+							<p:selectOneMenu widgetVar="cirujano" value="#{DispoBean.reservaBean.reservaEditar.profesionalByProfesionalIdProfesional1}"  styleClass="columna" converter="profesionalConverter"  filter="true" filterMatchMode="startsWith">
+								<f:selectItem itemLabel="Seleccionar"  styleClass="columna" itemValue="0"/>
+								<f:selectItems value="#{DispoBean.reservaBean.cirujanos}" var="ciruj" itemLabel="#{ciruj.apellidos}"  styleClass="columna" itemValue="#{ciruj}" /> 		
+							</p:selectOneMenu>
+						
+					 
+						<h:outputText value="Anestesiólogo:" styleClass="columna"  />
+							<p:selectOneMenu widgetVar="anestesiologo"  styleClass="columna" value="#{DispoBean.reservaBean.reservaEditar.profesionalByProfesionalIdProfesional2}" converter="profesionalConverter"  filter="true" filterMatchMode="startsWith">
+								<f:selectItem itemLabel="Seleccionar"  styleClass="columna" itemValue="0"/>
+								<f:selectItems value="#{DispoBean.reservaBean.anestesiologos}"  styleClass="columna" var="anest" itemLabel="#{anest.apellidos}" itemValue="#{anest}" /> 		
+							</p:selectOneMenu>
+					
+						<h:outputText value="Instrumentista:"  styleClass="columna" />
+						
+						<p:selectOneMenu widgetVar="instrumentista" value="#{DispoBean.reservaBean.reservaEditar.profesionalByProfesionalIdProfesional}"  styleClass="columna" converter="profesionalConverter"  filter="true" filterMatchMode="startsWith"
+						 >
+							<f:selectItem itemLabel="Seleccionar"  styleClass="columna" itemValue="0"/>
+							<f:selectItems value="#{DispoBean.reservaBean.instrumentistas}"  styleClass="columna" var="instr" itemLabel="#{instr.apellidos}" itemValue="#{instr}" /> 		
+						</p:selectOneMenu>
+					
+						<h:outputText value="Observacion:"  styleClass="columna" />
+						<p:inputText value="#{DispoBean.reservaBean.reservaEditar.observacion}"  styleClass="columna" />
+						
+						<h:outputText value="Duración Estimada:"  styleClass="columna" /> 
+						<h:outputText value="" />
+						
+						<h:outputText value="Horas: "  styleClass="columna" />    
+						<p:inputText value="#{DispoBean.reservaBean.durEstHorasEditar}" size="3" styleClass="columna" />
+						
+						<h:outputText value="Minutos"  styleClass="columna" />  
+						<p:inputText value="#{DispoBean.reservaBean.durEstMinEditar}" size="3" styleClass="columna" />
+						
+						<h:outputText value="Aprobado:"  styleClass="columna" />  
+				        <p:selectBooleanCheckbox value="#{DispoBean.reservaBean.reservaEditar.aprobado}" styleClass="columna" />
+			       
+				        <h:outputText value="Realizado:"  styleClass="columna" />  
+				        <p:selectBooleanCheckbox value="#{DispoBean.reservaBean.reservaEditar.realizado}" styleClass="columna" />  
+			    
+				        <h:outputText value="Cancelado:" styleClass="columna"  />  
+				        <p:selectBooleanCheckbox value="#{DispoBean.reservaBean.reservaEditar.cancelado}" styleClass="columna" />    
+		
+				        <h:outputText value="Compañía:"  styleClass="columna" />
+						<p:inputText value="#{DispoBean.reservaBean.reservaEditar.compania}"  styleClass="columna" />
+		
+				        <h:outputText value="Ubicación:"  styleClass="columna" />
+						<p:inputText value="#{DispoBean.reservaBean.reservaEditar.ubicacion}"  styleClass="columna" />
+						
+						<h:outputText value="Duración Real:"  styleClass="columna" /> 
+						<h:outputText value="" />
+								
+						<h:outputText value="Horas: "  styleClass="columna" />    
+						<p:inputText value="#{ReservaBean.durHorasEditar}" size="3" styleClass="columna" />
+								
+						<h:outputText value="Minutos"  styleClass="columna" />  
+						<p:inputText value="#{ReservaBean.durMinEditar}" size="3" styleClass="columna" />
+		
+					<p:commandButton value="Confirmar"
+						actionListener="#{DispoBean.reservaBean.procesarEditarReprogramar}"
+						update=":form:growl" oncomplete="dialogEditar.hide();myschedule.update();" />
+		
+				</h:panelGrid>
+			</p:scrollPanel>
+		</p:dialog>
+	
+		<p:dialog id="dialogNuevo" header="Nuevo" widgetVar="dialogNuevo"
+			resizable="false" width="500" height="600" showEffect="clip"
+			hideEffect="fold">
+	
+			<p:messages id="messagesNuevo" showDetail="true" autoUpdate="true"
+				closable="true" />
+			<p:scrollPanel style="width:480px;height:580px">
+				<h:panelGrid id="displayNuevo" columns="2" cellpadding="8">
+					<h:outputText styleClass="columna"  value="Fecha Reserva:" />
+					<p:calendar value="#{DispoBean.reservaBean.reserva.fechaIni}" styleClass="columna"  id="calendarNuevo" 
+						pattern="dd/MM/yyyy hh:mm a" navigator="true" display="inline" effect="slide" 
+						showOn="button" showButtonPanel="true" yearRange="c-100:c-0"> 
+					</p:calendar>
+					
+					<h:outputText styleClass="columna"  value="Sala:" />
+					<p:selectOneMenu widgetVar="sala" value="#{DispoBean.reservaBean.reserva.sala}" styleClass="columna"  converter="salaConverter"  >
+							<f:selectItem itemLabel="Seleccionar" itemValue="0"/>
+							<f:selectItems value="#{DispoBean.reservaBean.salas}" var="sala" itemLabel="#{sala.codSala}" itemValue="#{sala}" /> 		
+					</p:selectOneMenu>
+						
+					<h:outputText styleClass="columna"  value="Procedimiento:" />
+					<p:selectOneMenu widgetVar="procedimiento" value="#{DispoBean.reservaBean.reserva.procedimiento}" styleClass="columna" converter="procedimientoConverter"  filter="true" filterMatchMode="startsWith">
+							<f:selectItem itemLabel="Seleccionar" styleClass="columna"  itemValue="0"/>
+							<f:selectItems value="#{DispoBean.reservaBean.procedimientos}" styleClass="columna"  var="proc" itemLabel="#{proc.nombre}" itemValue="#{proc}" /> 		
+					</p:selectOneMenu>
+					
+					<h:outputText styleClass="columna"  value="Paciente:" />
+					
+						<p:selectOneMenu widgetVar="paciente" styleClass="columna"  value="#{DispoBean.reservaBean.reserva.paciente}" converter="pacienteConverter"  filter="true" filterMatchMode="startsWith">
+								<f:selectItem styleClass="columna"  itemLabel="Seleccionar" itemValue="0"/>
+								<f:selectItems styleClass="columna"  value="#{DispoBean.reservaBean.pacientes}" var="pacie" itemLabel="#{pacie.apellidos}" itemValue="#{pacie}" /> 		
+						</p:selectOneMenu>
+						
+					<h:outputText styleClass="columna"  value="Cirujano:" />
+					<p:selectOneMenu widgetVar="cirujano" styleClass="columna"  value="#{DispoBean.reservaBean.reserva.profesionalByProfesionalIdProfesional1}" converter="profesionalConverter"  filter="true" filterMatchMode="startsWith">
+							<f:selectItem itemLabel="Seleccionar" styleClass="columna" itemValue="0"/>
+							<f:selectItems value="#{DispoBean.reservaBean.cirujanos}" styleClass="columna" var="ciruj" itemLabel="#{ciruj.apellidos}" itemValue="#{ciruj}" /> 		
+					</p:selectOneMenu>
+					
+					<h:outputText styleClass="columna"  value="Anestesiologo:" />
+					<p:selectOneMenu widgetVar="anestesiologo" styleClass="columna"  value="#{DispoBean.reservaBean.reserva.profesionalByProfesionalIdProfesional2}" converter="profesionalConverter"  filter="true" filterMatchMode="startsWith">
+							<f:selectItem styleClass="columna"  itemLabel="Seleccionar" itemValue="0"/>
+							<f:selectItems styleClass="columna"  value="#{DispoBean.reservaBean.anestesiologos}" var="anest" itemLabel="#{anest.apellidos}" itemValue="#{anest}" /> 		
+					</p:selectOneMenu>
+					
+					<h:outputText styleClass="columna"  value="Instrumentista:" />
+					<p:selectOneMenu widgetVar="instrumentista" styleClass="columna"  value="#{DispoBean.reservaBean.reserva.profesionalByProfesionalIdProfesional}" converter="profesionalConverter"  filter="true" filterMatchMode="startsWith">
+							<f:selectItem styleClass="columna"  itemLabel="Seleccionar" itemValue="0"/>
+							<f:selectItems styleClass="columna"  value="#{DispoBean.reservaBean.instrumentistas}" var="instr" itemLabel="#{instr.apellidos}" itemValue="#{instr}" /> 		
+					</p:selectOneMenu>
+					
+					<h:outputText styleClass="columna"  value="Observacion:" />
+					<p:inputText styleClass="columna"  value="#{DispoBean.reservaBean.reserva.observacion}" />
+								
+					<h:outputText styleClass="columna" value="Duración Aprox" />
+					<h:outputText styleClass="columna"  value="" />
+					<h:outputText styleClass="columna"  value="Horas:" />
+					<p:inputText styleClass="columna"  value="#{DispoBean.reservaBean.durEstHoras}" size="3"/>
+					<h:outputText styleClass="columna"  value="Minutos:" />
+					<p:inputText styleClass="columna"  value="#{DispoBean.reservaBean.durEstMin}" size="3"/>
+					
+					<h:outputText styleClass="columna"  value="Aprobado:" />  
+			        <p:selectBooleanCheckbox styleClass="columna" value="#{DispoBean.reservaBean.reserva.aprobado}"/>
+			        
+			        <h:outputText styleClass="columna"  value="Realizado:" />  
+			        <p:selectBooleanCheckbox value="#{DispoBean.reservaBean.reserva.realizado}"/>  
+			        
+			        <h:outputText styleClass="columna"  value="Cancelado:" />  
+			        <p:selectBooleanCheckbox value="#{DispoBean.reservaBean.reserva.cancelado}"/>    
+			        
+			        <h:outputText styleClass="columna"  value="Compañía:" />
+					<p:inputText styleClass="columna"  value="#{DispoBean.reservaBean.reserva.compania}" />
+			        
+			        <h:outputText styleClass="columna"  value="Ubicación:" />
+					<p:inputText styleClass="columna"  value="#{DispoBean.reservaBean.reserva.ubicacion}" />
+					
+					<p:commandButton styleClass="columna"  value="Confirmar" update=":form:growl"
+						actionListener="#{DispoBean.reservaBean.procesarInsertar}"
+						oncomplete="dialogNuevo.hide();myschedule.update();" />
+				</h:panelGrid>
+			</p:scrollPanel>
+		</p:dialog>
+		
+		<p:dialog id="dialogPacienteNuevo" header="Nuevo Paciente" widgetVar="dialogPacienteNuevo"
+			resizable="false" width="450" height="230" showEffect="fold" hideEffect="drop">
+
+			<h:panelGrid id="displayPacienteNuevo" columns="2" cellpadding="4">
+				<h:outputText value="Historia Clínica:"  styleClass="columna" />
+				<p:inputText value="#{DispoBean.reservaBean.pacBean.paciente.histClinica}"  styleClass="columna" />
+				
+				<h:outputText value="Nombres:"  styleClass="columna" />
+				<p:inputText value="#{DispoBean.reservaBean.pacBean.paciente.nombres}"  styleClass="columna" />
+				
+				<h:outputText value="Apellidos:"  styleClass="columna" />
+				<p:inputText value="#{DispoBean.reservaBean.pacBean.paciente.apellidos}"  styleClass="columna" />
+				
+				<h:outputText value="Fecha de Nacimiento:"  styleClass="columna" />
+				<p:calendar value="#{DispoBean.reservaBean.pacBean.paciente.fechNac}" id="calendarPacienteNuevo" 
+					navigator="true"  styleClass="columna" display="inline" effect="slide" yearRange="c-100:c-0"/>
+	
+				<p:commandButton value="Nuevo"  update=":form:growl, :form:displayNuevo"
+					actionListener="#{DispoBean.reservaBean.actualizarInsertarPaciente}"
+					 oncomplete="dialogPacienteNuevo.hide();"/>
+			</h:panelGrid>
+		</p:dialog>
+		
+		<p:dialog id="dialogProcNuevo" header="Nuevo" widgetVar="dialogProcNuevo"
+			resizable="false" width="400" height="180" showEffect="fold" hideEffect="drop">
+
+			<h:panelGrid id="displayProcNuevo" columns="2" cellpadding="4">
+				<h:outputText value="CIE:" styleClass="columna" />
+				<p:inputText value="#{DispoBean.reservaBean.procBean.proced.cie}" styleClass="columna" />
+				
+				<h:outputText value="Nombre:" styleClass="columna"  />
+				<p:inputText value="#{DispoBean.reservaBean.procBean.proced.nombre}" styleClass="columna" />
+				
+				<h:outputText value="Descripción:" styleClass="columna" />
+				<p:inputText value="#{DispoBean.reservaBean.procBean.proced.descripcion}" styleClass="columna" />
+
+				<p:commandButton value="Nuevo" update=":form:growl, :form:displayNuevo"
+					actionListener="#{DispoBean.reservaBean.actualizarInsertarProc}"
+					oncomplete="dialogProcNuevo.hide();" />
+			</h:panelGrid>
+		</p:dialog>
+		
+		<p:panel styleClass="centro">
+			<f:facet name="header" >
+			
+			 	<p:commandButton styleClass="back" value="Regresar" icon="ui-icon-circle-arrow-w" action="menuPrincipal" ajax="false"/>			 	<div id="reloj">
+				<br/>
+				<p:clock pattern="HH:mm:ss - dd / MM / yyyy" />
+				</div>
+            </f:facet>
+		
+		</p:panel>
+		
+
+        <p:panel>
+                       
+            <f:facet name="header">               
+               
+                
+                <p:commandButton id="viewNuevo" styleClass="botonPeque" value="Nuevo" icon="ui-icon-document"
+                                 update=":form:displayNuevo" oncomplete="dialogNuevo.show()"
+                                 actionListener="#{DispoBean.reservaBean.limpiarForms}"/>
+
+                <p:commandButton id="actualizar" styleClass="botonPeque" value="Actualizar" icon="ui-icon-document"
+                                 actionListener="#{DispoBean.refrescarReservasVigentes}"
+                                 oncomplete="myschedule.update()"/>
+
+                <p:commandButton id="viewEditar" styleClass="botonPeque" value="Editar"
+                                 icon="ui-icon-search" update=":form:displayEditar"
+                                 actionListener="#{DispoBean.reservaBean.editarEvent}"
+                                 oncomplete="dialogEditar.show()" />
+
+                <p:commandButton id="EliminarRegistro" styleClass="botonPeque" value="Eliminar"
+                                 icon="ui-icon-closethick" update=":form:displayEditar"
+                                 onclick="confirmation.show()"  />
+                                 
+                <p:commandButton styleClass="botonPeque" value="AGREGAR PACIENTE"
+							update=":form:growl, :form:displayEditar, :form:displayNuevo"
+							oncomplete="dialogPacienteNuevo.show();" />
+								
+				<p:commandButton styleClass="botonPeque"  value="AGREGAR PROCEDIMIENTO"
+					update=":form:growl, :form:displayEditar, :form:displayNuevo"
+					oncomplete="dialogProcNuevo.show();"/>
+
+            </f:facet>
+        </p:panel>
+
+
+
+        <p:panel width="1200">
+            <div id="cuerpo">
+                <p:schedule id="schedule" styleClass="horario" value="#{DispoBean.eventModel}" widgetVar="myschedule" locale="es" draggable="false" resizable="false"
+                        view="agendaDay">
+
+                    <p:ajax event="dateSelect" listener="#{DispoBean.onDateSelect}"  />
+                    <p:ajax event="eventSelect" listener="#{DispoBean.onEventSelect}"  oncomplete="myschedule.update()"/>
+
+                </p:schedule>
+            </div>
+        </p:panel>
+        <p:confirmDialog id="confirmDialog" message="¿Esta seguro de esta accion?"
+                         header="Eliminar Registro" severity="alert" widgetVar="confirmation">
+
+            <p:commandButton id="confirm" value="Si" update="growl" oncomplete="confirmation.hide();myschedule.update();"
+                             actionListener="#{DispoBean.reservaBean.eliminar}" />
+            <p:commandButton id="decline" value="No" onclick="confirmation.hide()" type="button" />
+
+        </p:confirmDialog>
+
+
+    </h:form>
+	
+</h:body>
+
+</html>
