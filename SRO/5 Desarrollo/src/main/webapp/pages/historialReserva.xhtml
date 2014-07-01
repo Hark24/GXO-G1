@@ -1,0 +1,577 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+<h:head>
+	<link type="text/css" rel="stylesheet" href="#{request.contextPath}/resources/css/estiloReserva.css"/> 
+</h:head>
+
+<h:body>
+
+	<p:layout fullPage="true" id="layout" widgetVar="main" styleClass="layout">  
+		
+		<p:layoutUnit position="west" size="300" header="Opciones" resizable="true" closable="true" collapsible="true" effect="drop">   
+			
+			<h:form id="formBotones" >
+		        	
+		    	<p:panel > 
+
+						<p:commandButton styleClass="botonPeque" value="AGREGAR PACIENTE"
+							update=":form:datatablecampana, :form:growl, :form:displayEditar, :form:displayNuevo"
+							oncomplete="dialogPacienteNuevo.show();" />
+								
+						<p:commandButton styleClass="botonPeque"  value="AGREGAR PROCEDIMIENTO"
+							update=":form:datatablecampana, :form:growl, :form:displayEditar, :form:displayNuevo"
+							oncomplete="dialogProcNuevo.show();"/>
+								
+						<p:commandButton styleClass="botonPeque"  value="AGREGAR SALA"
+							update=":form:datatablecampana, :form:growl, :form:displayEditar, :form:displayNuevo"
+							oncomplete="dialogSalaNuevo.show();"/>
+						
+						<p:commandButton styleClass="botonPeque"  value="AGREGAR PROFESIONAL"
+							update=":form:datatablecampana, :form:growl, :form:displayEditar, :form:displayNuevo"
+							oncomplete="dialogProfNuevo.show();"/>
+				</p:panel>
+			</h:form>	
+		</p:layoutUnit> 
+		
+		<p:layoutUnit position="east" size="300" header="Detalle Operación" resizable="true" closable="true" collapsible="true" effect="drop">   
+			
+			<h:form id="formDetalle" >
+		        	
+		    	<p:panel > 
+					<h:panelGrid styleClass="displayBasico" >			
+						
+						<h:outputText styleClass="columna" value="Procedimiento"/>
+						<h:outputText styleClass="detalle" value="#{ReservaBean.detalle.procedimiento.nombre}" disabled="true"/>
+						
+					    <h:outputText styleClass="columna" value="Paciente"/>
+						<h:outputText styleClass="detalle" value="#{ReservaBean.detalle.paciente.apellidos}" disabled="true"/>
+						
+						<h:outputText styleClass="columna" value="Edad"/>
+						<h:outputText styleClass="detalle" value="#{ReservaBean.detalle.paciente.edad}" disabled="true"/>
+								
+						<h:outputText styleClass="columna" value="Compañía"/>
+						<h:outputText styleClass="detalle" value="#{ReservaBean.detalle.compania}" disabled="true"/>
+							
+						<h:outputText styleClass="columna" value="Cirujano"/>
+						<h:outputText styleClass="detalle" value="#{ReservaBean.detalle.profesionalByProfesionalIdProfesional1.apellidos}" disabled="true"/>
+						
+						<h:outputText styleClass="columna" value="Anestesiologo"/>
+						<h:outputText styleClass="detalle" value="#{ReservaBean.detalle.profesionalByProfesionalIdProfesional2.apellidos}" disabled="true"/>
+								
+						<h:outputText styleClass="columna" value="Instrumentista"/>
+						<h:outputText styleClass="detalle" value="#{ReservaBean.detalle.profesionalByProfesionalIdProfesional.apellidos}" disabled="true"/>
+						
+						<h:outputText styleClass="columna" value="Observacion"/>
+						<h:outputText styleClass="detalle" value="#{ReservaBean.detalle.observacion}" disabled="true"/>
+						
+						<h:outputText styleClass="columna" value="Tiempo Aprox"/>
+						<h:outputText styleClass="detalle" value="#{ReservaBean.detalle.duracionEst}" disabled="true">
+							<f:convertDateTime type="date" pattern="hh:mm" timeZone="GMT-5"/>
+						</h:outputText>
+						
+						<h:outputText styleClass="columna" value="Tiempo Real"/>
+						<h:outputText styleClass="detalle" value="#{ReservaBean.detalle.duracionReal}" disabled="true">
+							<f:convertDateTime type="date" pattern="hh:mm" timeZone="GMT-5"/>
+						</h:outputText>
+						
+					</h:panelGrid>
+				</p:panel>
+			</h:form>	
+		</p:layoutUnit> 
+	
+		<p:layoutUnit position="center"> 
+			
+				<h:form id="form" >
+				
+					<p:growl id="growl" showDetail="true" life="3000" /> 
+				
+					<p:dialog id="dialogEditar" header="Editar" widgetVar="dialogEditar"
+						resizable="false" width="500" height="600" showEffect="clip"
+						hideEffect="fold">
+						<p:messages id="messagesEditar" showDetail="true" autoUpdate="true"
+							closable="true" />
+					<p:scrollPanel style="width:480px;height:580px">		
+						<h:panelGrid id="displayEditar" columns="2" cellpadding="8">
+							
+							<h:outputText styleClass="columna" value="Fecha Reserva:" />
+							<p:calendar styleClass="columna"  value="#{ReservaBean.reservaEditar.fechaIni}" id="calendarEditar" 
+								pattern="dd/MM/yyyy hh:mm a" navigator="true" display="popup" effect="slide" 
+								showOn="button" showButtonPanel="true" yearRange="c-100:c-0"/>
+								
+								
+								<h:outputText styleClass="columna"  value="Sala:" /> 
+									<p:selectOneMenu widgetVar="sala" value="#{ReservaBean.reservaEditar.sala}" styleClass="columna"  converter="salaConverter"  >
+											<f:selectItem itemLabel="Seleccionar" styleClass="columna"  itemValue="0"/>
+											<f:selectItems value="#{ReservaBean.salas}" var="sala" styleClass="columna"  itemLabel="#{sala.codSala}" itemValue="#{sala}" /> 		
+									</p:selectOneMenu>
+
+								<h:outputText value="Procedimiento:" styleClass="columna"  />
+									<p:selectOneMenu widgetVar="procedimiento" value="#{ReservaBean.reservaEditar.procedimiento}" styleClass="columna" converter="procedimientoConverter"  filter="true" filterMatchMode="startsWith">
+											<f:selectItem itemLabel="Seleccionar" styleClass="columna"  itemValue="0"/>
+											<f:selectItems value="#{ReservaBean.procedimientos}" var="proc"  styleClass="columna" itemLabel="#{proc.nombre}" itemValue="#{proc}" /> 		
+									</p:selectOneMenu>
+	
+								<h:outputText value="Paciente:"  styleClass="columna" />
+								
+									<p:selectOneMenu widgetVar="paciente" value="#{ReservaBean.reservaEditar.paciente}"  styleClass="columna" converter="pacienteConverter"  filter="true" filterMatchMode="startsWith">
+										<f:selectItem itemLabel="Seleccionar" styleClass="columna"  itemValue="0"/>
+										<f:selectItems value="#{ReservaBean.pacientes}" var="pacie"  styleClass="columna" itemLabel="#{pacie.apellidos}" itemValue="#{pacie}" /> 		
+									</p:selectOneMenu>
+							 
+								<h:outputText value="Cirujano:"  styleClass="columna" />
+									<p:selectOneMenu widgetVar="cirujano" value="#{ReservaBean.reservaEditar.profesionalByProfesionalIdProfesional1}"  styleClass="columna" converter="profesionalConverter" filter="true" filterMatchMode="startsWith">
+										<f:selectItem itemLabel="Seleccionar"  styleClass="columna" itemValue="0"/>
+										<f:selectItems value="#{ReservaBean.cirujanos}" var="ciruj" itemLabel="#{ciruj.apellidos}"  styleClass="columna" itemValue="#{ciruj}" /> 		
+									</p:selectOneMenu>
+								
+							 
+								<h:outputText value="Anestesiólogo:" styleClass="columna"  />
+									<p:selectOneMenu widgetVar="anestesiologo"  styleClass="columna" value="#{ReservaBean.reservaEditar.profesionalByProfesionalIdProfesional2}" converter="profesionalConverter"  filter="true" filterMatchMode="startsWith">
+										<f:selectItem itemLabel="Seleccionar"  styleClass="columna" itemValue="0"/>
+										<f:selectItems value="#{ReservaBean.anestesiologos}"  styleClass="columna" var="anest" itemLabel="#{anest.apellidos}" itemValue="#{anest}" /> 		
+									</p:selectOneMenu>
+							
+								<h:outputText value="Instrumentista:"  styleClass="columna" />
+								
+								<p:selectOneMenu widgetVar="instrumentista" value="#{ReservaBean.reservaEditar.profesionalByProfesionalIdProfesional}"  styleClass="columna" converter="profesionalConverter"  filter="true" filterMatchMode="startsWith">
+									<f:selectItem itemLabel="Seleccionar"  styleClass="columna" itemValue="0"/>
+									<f:selectItems value="#{ReservaBean.instrumentistas}"  styleClass="columna" var="instr" itemLabel="#{instr.apellidos}" itemValue="#{instr}" /> 		
+								</p:selectOneMenu>
+								
+								<h:outputText value="Observacion:"  styleClass="columna" />
+								<p:inputText value="#{ReservaBean.reservaEditar.observacion}"  styleClass="columna" />
+								
+								<h:outputText value="Duración Estimada:"  styleClass="columna" /> 
+								<h:outputText value="" />
+								
+								<h:outputText value="Horas: "  styleClass="columna" />    
+								<p:inputText value="#{ReservaBean.durEstHorasEditar}" size="3" styleClass="columna" />
+								
+								<h:outputText value="Minutos"  styleClass="columna" />  
+								<p:inputText value="#{ReservaBean.durEstMinEditar}" size="3" styleClass="columna" />
+								
+								<h:outputText value="Aprobado:"  styleClass="columna" />  
+						        <p:selectBooleanCheckbox value="#{ReservaBean.reservaEditar.aprobado}" styleClass="columna" />
+					       
+						        <h:outputText value="Realizado:"  styleClass="columna" />  
+						        <p:selectBooleanCheckbox value="#{ReservaBean.reservaEditar.realizado}" styleClass="columna" />  
+					    
+						        <h:outputText value="Cancelado:" styleClass="columna"  />  
+						        <p:selectBooleanCheckbox value="#{ReservaBean.reservaEditar.cancelado}" styleClass="columna" />    
+				
+						        <h:outputText value="Compañía:"  styleClass="columna" />
+								<p:inputText value="#{ReservaBean.reservaEditar.compania}"  styleClass="columna" />
+	
+						        <h:outputText value="Ubicación:"  styleClass="columna" />
+								<p:inputText value="#{ReservaBean.reservaEditar.ubicacion}"  styleClass="columna" />
+								
+								<h:outputText value="Duración Real:"  styleClass="columna" /> 
+								<h:outputText value="" />
+								
+								<h:outputText value="Horas: "  styleClass="columna" />    
+								<p:inputText value="#{ReservaBean.durHorasEditar}" size="3" styleClass="columna" />
+								
+								<h:outputText value="Minutos"  styleClass="columna" />  
+								<p:inputText value="#{ReservaBean.durMinEditar}" size="3" styleClass="columna" />
+
+								<p:commandButton value="Confirmar"
+								actionListener="#{ReservaBean.procesarEditarReprogramar}"
+								update=":form:datatablecampana, :form:growl, :formDetalle" oncomplete="dialogEditar.hide();" />
+			
+							</h:panelGrid>
+						</p:scrollPanel>
+					</p:dialog>
+			
+					<p:dialog id="dialogNuevo" header="Nuevo" widgetVar="dialogNuevo"
+						resizable="false" width="500" height="600" showEffect="clip"
+						hideEffect="fold">
+			
+						<p:messages id="messagesNuevo" showDetail="true" autoUpdate="true"
+							closable="true" />
+						<p:scrollPanel style="width:480px;height:580px">
+							<h:panelGrid id="displayNuevo" columns="2" cellpadding="8">
+								<h:outputText styleClass="columna"  value="Fecha Reserva:" />
+								<p:calendar value="#{ReservaBean.reserva.fechaIni}" styleClass="columna"  id="calendarNuevo" 
+									pattern="dd/MM/yyyy hh:mm a" navigator="true" display="inline" effect="slide" 
+									showOn="button" showButtonPanel="true" yearRange="c-100:c-0"> 
+								</p:calendar>
+								
+								<h:outputText styleClass="columna"  value="Sala:" />
+								<p:selectOneMenu widgetVar="sala" value="#{ReservaBean.reserva.sala}" styleClass="columna"  converter="salaConverter"  >
+										<f:selectItem itemLabel="Seleccionar" itemValue="0"/>
+										<f:selectItems value="#{ReservaBean.salas}" var="sala" itemLabel="#{sala.codSala}" itemValue="#{sala}" /> 		
+								</p:selectOneMenu>
+									
+								<h:outputText styleClass="columna"  value="Procedimiento:" />
+								<p:selectOneMenu widgetVar="procedimiento" value="#{ReservaBean.reserva.procedimiento}" styleClass="columna" converter="procedimientoConverter"  >
+										<f:selectItem itemLabel="Seleccionar" styleClass="columna"  itemValue="0"/>
+										<f:selectItems value="#{ReservaBean.procedimientos}" styleClass="columna"  var="proc" itemLabel="#{proc.nombre}" itemValue="#{proc}" /> 		
+								</p:selectOneMenu>
+								
+								<h:outputText styleClass="columna"  value="Paciente:" />
+								
+									<p:selectOneMenu widgetVar="paciente" styleClass="columna"  value="#{ReservaBean.reserva.paciente}" converter="pacienteConverter"  filter="true" filterMatchMode="startsWith">
+											<f:selectItem styleClass="columna"  itemLabel="Seleccionar" itemValue="0"/>
+											<f:selectItems styleClass="columna"  value="#{ReservaBean.pacientes}" var="pacie" itemLabel="#{pacie.apellidos}" itemValue="#{pacie}" /> 		
+									</p:selectOneMenu>
+									
+								<h:outputText styleClass="columna"  value="Cirujano:" />
+								<p:selectOneMenu widgetVar="cirujano" styleClass="columna"  value="#{ReservaBean.reserva.profesionalByProfesionalIdProfesional1}" converter="profesionalConverter"  filter="true" filterMatchMode="startsWith">
+										<f:selectItem itemLabel="Seleccionar" styleClass="columna" itemValue="0"/>
+										<f:selectItems value="#{ReservaBean.cirujanos}" styleClass="columna" var="ciruj" itemLabel="#{ciruj.apellidos}" itemValue="#{ciruj}" /> 		
+								</p:selectOneMenu>
+								
+								<h:outputText styleClass="columna"  value="Anestesiologo:" />
+								<p:selectOneMenu widgetVar="anestesiologo" styleClass="columna"  value="#{ReservaBean.reserva.profesionalByProfesionalIdProfesional2}" converter="profesionalConverter"  filter="true" filterMatchMode="startsWith">
+										<f:selectItem styleClass="columna"  itemLabel="Seleccionar" itemValue="0"/>
+										<f:selectItems styleClass="columna"  value="#{ReservaBean.anestesiologos}" var="anest" itemLabel="#{anest.apellidos}" itemValue="#{anest}" /> 		
+								</p:selectOneMenu>
+								
+								<h:outputText styleClass="columna"  value="Instrumentista:" />
+								<p:selectOneMenu widgetVar="instrumentista" styleClass="columna"  value="#{ReservaBean.reserva.profesionalByProfesionalIdProfesional}" converter="profesionalConverter"  effect="fade" filter="true" filterMatchMode="startsWith">
+										<f:selectItem styleClass="columna"  itemLabel="Seleccionar" itemValue="0"/>
+										<f:selectItems styleClass="columna"  value="#{ReservaBean.instrumentistas}" var="instr" itemLabel="#{instr.apellidos}" itemValue="#{instr}" /> 		
+								</p:selectOneMenu>
+								
+								<h:outputText styleClass="columna"  value="Observacion:" />
+								<p:inputText styleClass="columna"  value="#{ReservaBean.reserva.observacion}" />
+								
+								<h:outputText styleClass="columna" value="Duración Aprox" />
+								<h:outputText styleClass="columna"  value="" />
+								<h:outputText styleClass="columna"  value="Horas:" />
+								<p:inputText styleClass="columna"  value="#{ReservaBean.durEstHoras}" size="3"/>
+								<h:outputText styleClass="columna"  value="Minutos:" />
+								<p:inputText styleClass="columna"  value="#{ReservaBean.durEstMin}" size="3"/>
+								
+								<h:outputText styleClass="columna"  value="Aprobado:" />  
+						        <p:selectBooleanCheckbox styleClass="columna" value="#{ReservaBean.reserva.aprobado}"/>
+						        
+						        <h:outputText styleClass="columna"  value="Realizado:" />  
+						        <p:selectBooleanCheckbox value="#{ReservaBean.reserva.realizado}"/>  
+						        
+						        <h:outputText styleClass="columna"  value="Cancelado:" />  
+						        <p:selectBooleanCheckbox value="#{ReservaBean.reserva.cancelado}"/>    
+						        
+						        <h:outputText styleClass="columna"  value="Compañía:" />
+								<p:inputText styleClass="columna"  value="#{ReservaBean.reserva.compania}" />
+						        
+						        <h:outputText styleClass="columna"  value="Ubicación:" />
+								<p:inputText styleClass="columna"  value="#{ReservaBean.reserva.ubicacion}" />
+								
+								<p:commandButton styleClass="columna"  value="Confirmar" update=":form:datatablecampana, :form:growl"
+									actionListener="#{ReservaBean.procesarInsertar}"
+									oncomplete="dialogNuevo.hide();" />
+							</h:panelGrid>
+						</p:scrollPanel>
+					</p:dialog>
+					
+					<p:dialog id="dialogPacienteNuevo" header="Nuevo Paciente" widgetVar="dialogPacienteNuevo"
+						resizable="false" width="450" height="230" showEffect="fold" hideEffect="drop">
+
+						<h:panelGrid id="displayPacienteNuevo" columns="2" cellpadding="4">
+							<h:outputText value="Historia Clínica:"  styleClass="columna" />
+							<p:inputText value="#{ReservaBean.pacBean.paciente.histClinica}"  styleClass="columna" />
+							
+							<h:outputText value="Nombres:"  styleClass="columna" />
+							<p:inputText value="#{ReservaBean.pacBean.paciente.nombres}"  styleClass="columna" />
+							
+							<h:outputText value="Apellidos:"  styleClass="columna" />
+							<p:inputText value="#{ReservaBean.pacBean.paciente.apellidos}"  styleClass="columna" />
+							
+							<h:outputText value="Fecha de Nacimiento:"  styleClass="columna" />
+							<p:calendar value="#{ReservaBean.pacBean.paciente.fechNac}" id="calendarPacienteNuevo" 
+								navigator="true"  styleClass="columna" display="inline" effect="slide" yearRange="c-100:c-0"/>
+				
+							<p:commandButton value="Nuevo"  update=":form:datatablecampana, :form:growl, :form:displayNuevo"
+								actionListener="#{ReservaBean.actualizarInsertarPaciente}"
+								 oncomplete="dialogPacienteNuevo.hide();"/>
+						</h:panelGrid>
+					</p:dialog>
+					
+					<p:dialog id="dialogProfNuevo" header="Nuevo" widgetVar="dialogProfNuevo"
+						resizable="false" width="400" height="250" showEffect="fold" hideEffect="drop">
+			
+						<h:panelGrid id="displayProfNuevo" columns="2" cellpadding="4">
+							<h:outputText value="Colegio:"  styleClass="columna" />
+							<p:inputText value="#{ReservaBean.profBean.profesi.colegio}"  styleClass="columna" />
+							
+							<h:outputText value="Nombres:"  styleClass="columna" />
+							<p:inputText value="#{ReservaBean.profBean.profesi.nombres}"  styleClass="columna" />
+							
+							<h:outputText value="Apellidos:"  styleClass="columna" />
+							<p:inputText value="#{ReservaBean.profBean.profesi.apellidos}" styleClass="columna"  />
+							
+							<h:outputText value="Vocación: "  styleClass="columna" />  
+					        <p:selectOneMenu value="#{ReservaBean.profBean.profesi.tipo}"  styleClass="columna" >  
+					            <f:selectItem itemLabel="Select One" itemValue=""  styleClass="columna" />  
+					            <f:selectItem itemLabel="cirujano" itemValue="CIRUJANO"  styleClass="columna" />  
+					            <f:selectItem itemLabel="anestesiologo" itemValue="ANESTESIOLOGO"  styleClass="columna" />  
+					            <f:selectItem itemLabel="instrumentista" itemValue="INSTRUMENTISTA"  styleClass="columna" />  
+					        </p:selectOneMenu>
+							
+							<p:commandButton value="Nuevo" update=":form:datatablecampana, :form:growl, :form:displayNuevo"
+								actionListener="#{ReservaBean.actualizarInsertarProf}"
+								oncomplete="dialogProfNuevo.hide();" />
+						</h:panelGrid>
+					</p:dialog>
+					
+					<p:dialog id="dialogSalaNuevo" header="Nuevo" widgetVar="dialogSalaNuevo"
+						resizable="false" width="400" height="120" showEffect="fold" hideEffect="drop">
+
+						<h:panelGrid id="displaySalaNuevo" columns="2" cellpadding="4">
+							
+							<h:outputText value="Tipo de Sala: " />  
+					        <p:selectOneMenu value="#{SalaBean.salaEditar.descripcion}" >  
+					            <f:selectItem itemLabel="Select One" itemValue="" />  
+					            <f:selectItem itemLabel="Quirofano" itemValue="Quirofano" />  
+					            <f:selectItem itemLabel="Extraquirofano" itemValue="Extraquirofano" />  
+					        </p:selectOneMenu>
+							
+							<p:commandButton value="Nuevo" update=":form:datatablecampana, :form:growl, :form:displayNuevo"
+								actionListener="#{ReservaBean.actualizarInsertarSala}"
+								oncomplete="dialogSalaNuevo.hide();" />
+						</h:panelGrid>
+					</p:dialog>
+					
+					<p:dialog id="dialogProcNuevo" header="Nuevo" widgetVar="dialogProcNuevo"
+						resizable="false" width="400" height="180" showEffect="fold" hideEffect="drop">
+
+						<h:panelGrid id="displayProcNuevo" columns="2" cellpadding="4">
+							<h:outputText value="CIE:" styleClass="columna" />
+							<p:inputText value="#{ReservaBean.procBean.proced.cie}" styleClass="columna" />
+							
+							<h:outputText value="Nombre:" styleClass="columna"  />
+							<p:inputText value="#{ReservaBean.procBean.proced.nombre}" styleClass="columna" />
+							
+							<h:outputText value="Descripción:" styleClass="columna" />
+							<p:inputText value="#{ReservaBean.procBean.proced.descripcion}" styleClass="columna" />
+			
+							<p:commandButton value="Nuevo" update=":form:datatablecampana, :form:growl, :form:displayNuevo"
+								actionListener="#{ReservaBean.actualizarInsertarProc}"
+								oncomplete="dialogProcNuevo.hide();" />
+						</h:panelGrid>
+					</p:dialog>
+				
+					<p:panel styleClass="centro">
+						
+						<f:facet name="header" >
+			
+						 	<p:commandButton styleClass="back" value="Regresar" icon="ui-icon-circle-arrow-w" action="menuPrincipal" ajax="false"/>
+						 	<p id="par">HISTORIAL DE RESERVAS</p>
+						 	
+			                <div id="reloj">
+								<p:clock pattern="HH:mm:ss - dd / MM / yyyy" />
+							</div>
+			            </f:facet>
+						
+						<div id="cuerpo">
+			
+							<p:dataTable id="datatablecampana" var="c" widgetVar="dt"
+								value="#{ReservaBean.reservas}" rowKey="#{c.idReserva}"
+								selection="#{ReservaBean.reservaNuevo}" selectionMode="single"
+								styleClass="datatable_style_general" paginator="true" rows="10"  
+					                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+					                 rowsPerPageTemplate="2,5,10" >
+			
+			                    <p:ajax event="rowSelect" listener="#{ReservaBean.onRowSelect}"
+			                            update=":formDetalle" />
+					
+								<f:facet name="header">
+									<p:calendar value="#{ReservaBean.fecha}" id="calendarPrincipal" 
+										pattern="dd/MM/yyyy" navigator="true" display="inline" effect="slide" showOn="button" yearRange="c-100:c-0">
+										<p:ajax event="dateSelect" listener="#{ReservaBean.refrescarByDay}" update=":form:datatablecampana" /> 
+									</p:calendar>
+							
+									<p:commandButton id="viewNuevo" styleClass="botonPeque" value="Nuevo" icon="ui-icon-document"
+										update=":form:displayNuevo" oncomplete="dialogNuevo.show()"
+										actionListener="#{ReservaBean.limpiarForms}"/>
+					
+									<p:commandButton id="viewEditar" styleClass="botonPeque" value="Editar"
+										icon="ui-icon-search" update=":form:displayEditar, :form:growl"
+										actionListener="#{ReservaBean.editarEvent}" />
+										
+									<p:commandButton id="EliminarRegistro" styleClass="botonPeque" value="Eliminar"
+										icon="ui-icon-closethick" update=":form:displayEditar, :form:growl"
+										actionListener="#{ReservaBean.eliminarEvent}" />
+										
+									<p:commandButton id="HistorialTotal" styleClass="botonPeque" value="HistorialTotal"
+										icon="ui-icon-closethick" update=":form:datatablecampana"
+										actionListener="#{ReservaBean.reservasTotales}"/>
+										
+									<h:commandLink>  
+							            <p:commandButton id="xlsExport" styleClass="botonPeque" value="excel"/>  
+							            <p:dataExporter type="xls" target="datatablecampana" fileName="HistorialReservas" postProcessor="#{TableBean.postProcessXLS}"/>  
+							        </h:commandLink>
+					
+								</f:facet>
+										
+								<p:column styleClass="columna" headerText="sala" filterBy="#{c.sala.codSala}">
+									<f:facet name="header">
+										<h:outputText value="Sala"/>
+									</f:facet>
+									<h:outputText value="#{c.sala.codSala}" />
+								</p:column>
+								
+								<p:column styleClass="columna" headerText="fecha aviso" filterBy="#{c.fechAviso}">
+									<f:facet name="header">
+										<h:outputText value="Aviso"/>
+									</f:facet>
+									<h:outputText value="#{c.fechAviso}" >
+										<f:convertDateTime type="date" pattern="dd-MM-yyyy"/>
+									</h:outputText>
+								</p:column>
+	
+								<p:column styleClass="columna" headerText="fecha reserva" filterBy="#{c.fechaIni}">
+									<f:facet name="header">
+										<h:outputText value="Reserva"/>
+									</f:facet>
+									<h:outputText value="#{c.fechaIni}" >
+										<f:convertDateTime type="date" pattern="dd/MM/yyyy hh:mm a" timeZone="GMT-5"/>
+									</h:outputText>
+								</p:column>
+								
+								<p:column styleClass="columna" headerText="tiempo aprox" filterBy="#{c.duracionEst}" style="display:none">
+									<f:facet name="header">
+										<h:outputText value="Tiempo"/>
+									</f:facet>
+									<h:outputText value="#{c.duracionEst}" >
+										<f:convertDateTime type="date" pattern="hh:mm" timeZone="GMT-5" />
+									</h:outputText>
+								</p:column>
+								
+								<p:column styleClass="columna" headerText="paciente" filterBy="#{c.paciente.apellidos}" style="display:none">
+									<f:facet name="header">
+										<h:outputText value="Apellidos"/>
+									</f:facet>
+									<h:outputText value="#{c.paciente.apellidos}" />
+								</p:column>
+								
+								<p:column styleClass="columna" headerText="paciente" filterBy="#{c.paciente.nombres}" style="display:none">
+									<f:facet name="header">
+										<h:outputText value="Nombres"/>
+									</f:facet>
+									<h:outputText value="#{c.paciente.nombres}" />
+								</p:column>
+								
+								<p:column styleClass="columna" headerText="edad" filterBy="#{c.paciente.edad}" style="display:none">
+									<f:facet name="header">
+										<h:outputText value="Edad"/>
+									</f:facet>
+									<h:outputText value="#{c.paciente.edad}" />
+								</p:column>
+								
+								<p:column styleClass="columna" headerText="compania" filterBy="#{c.compania}" style="display:none">
+									<f:facet name="header">
+										<h:outputText value="Compañia"/>
+									</f:facet>
+									<h:outputText value="#{c.compania}" />
+								</p:column>
+								
+								<p:column styleClass="columna" headerText="ubicacion" filterBy="#{c.ubicacion}">
+									<f:facet name="header">
+										<h:outputText value="Ubicacion"/>
+									</f:facet>
+									<h:outputText value="#{c.ubicacion}" />
+								</p:column>
+								
+								<p:column styleClass="columna" headerText="procedimiento" filterBy="#{c.procedimiento.nombre}" style="display:none">
+									<f:facet name="header">
+										<h:outputText value="Procedimiento"/>
+									</f:facet>
+									<h:outputText value="#{c.procedimiento.nombre}" />
+								</p:column>
+								
+								<p:column styleClass="columna" headerText="cirujano" filterBy="#{c.profesionalByProfesionalIdProfesional1.apellidos}" style="display:none">
+									<f:facet name="header">
+										<h:outputText value="Cirujano"/>
+									</f:facet>
+									<h:outputText value="#{c.profesionalByProfesionalIdProfesional1.apellidos}" />
+								</p:column>
+								
+								<p:column styleClass="columna" headerText="anestesiologo" filterBy="#{c.profesionalByProfesionalIdProfesional2.apellidos}" style="display:none">
+									<f:facet name="header">
+										<h:outputText value="Anestesiologo"/>
+									</f:facet>
+									<h:outputText value="#{c.profesionalByProfesionalIdProfesional2.apellidos}" />
+								</p:column>
+								
+								<p:column styleClass="columna" headerText="instrumentista" filterBy="#{c.profesionalByProfesionalIdProfesional.apellidos}" style="display:none">
+									<f:facet name="header">
+										<h:outputText value="Instrumentista"/>
+									</f:facet>
+									<h:outputText value="#{c.profesionalByProfesionalIdProfesional.apellidos}" />
+								</p:column>
+								
+								<p:column styleClass="columna" headerText="observacion" filterBy="#{c.compania}" style="display:none">
+									<f:facet name="header">
+										<h:outputText value="Observacion"/>
+									</f:facet>
+									<h:outputText value="#{c.observacion}" />
+								</p:column>
+								
+								<p:column styleClass="columna" headerText="aprobado" filterBy="#{c.aprobado}">
+									<f:facet name="header">
+										<h:outputText value="Aprobado"/>
+									</f:facet>
+									<h:outputText value="#{c.aprobado}" />
+								</p:column>
+								
+								<p:column styleClass="columna" headerText="cancelado" filterBy="#{c.cancelado}">
+									<f:facet name="header">
+										<h:outputText value="Cancelado"/>
+									</f:facet>
+									<h:outputText value="#{c.cancelado}" />
+								</p:column>
+								
+								<p:column styleClass="columna" headerText="realizado" filterBy="#{c.realizado}">
+									<f:facet name="header">
+										<h:outputText value="Realizado"/>
+									</f:facet>
+									<h:outputText value="#{c.realizado}" />
+								</p:column>
+								
+								<p:column styleClass="columna" headerText="tiempo real" filterBy="#{c.duracionReal}" style="display:none">
+									<f:facet name="header">
+										<h:outputText value="Tiempo Real"/>
+									</f:facet>
+									<h:outputText value="#{c.duracionReal}" >
+										<f:convertDateTime type="date" pattern="hh:mm" timeZone="GMT-5"/>
+									</h:outputText>
+								</p:column>
+								
+								<f:facet name="footer">
+								</f:facet>
+							</p:dataTable>
+						</div>
+			
+					</p:panel>
+
+				</h:form>
+			</p:layoutUnit>
+
+		</p:layout>
+			
+					<p:dialog id="modalDialog" header="CONFIRMACION" widgetVar="dlg2" modal="true" height="150" width="400" closable="false" resizable="false">  
+				    	<p:messages id="messages" showDetail="true" autoUpdate="true"
+								closable="false" /> 
+						<p:commandButton value="OK" onclick="dlg2.hide()"/> 
+					</p:dialog> 
+					<p:confirmDialog id="confirmDialog" message="¿Esta seguro de esta accion?"  
+			                header="Eliminar Registro" severity="alert" widgetVar="confirmation">  
+			                  
+			        <p:commandButton id="confirm" value="Si" update=":form:datatablecampana, :form:growl" oncomplete="confirmation.hide()"  
+			                    actionListener="#{ReservaBean.eliminar}" />  
+			        <p:commandButton id="decline" value="No" onclick="confirmation.hide()" type="button" />   
+			                  
+			    	</p:confirmDialog>  
+	</h:body>
+
+
+</html>
