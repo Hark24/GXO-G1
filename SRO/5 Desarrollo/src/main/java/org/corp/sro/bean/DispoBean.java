@@ -119,10 +119,7 @@ public class DispoBean implements Serializable{
         return calendar;
     }  
       
-
-      
-
-      
-
-
+    public TimeZone getTimeZone(){
+         return Calendar.getInstance().getTimeZone();
+     }
 }
