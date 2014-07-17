@@ -130,6 +130,10 @@ public class ProfesionalBean implements Serializable{
         {
         	msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", "Ingrese Profesión");  
         }
+        else if(profesi.getColegio().equals(""))
+        {
+        	msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", "Ingrese Codigo de Colegio Medico");  
+        }
         else
         {
         	registrado = true;  
@@ -144,7 +148,9 @@ public class ProfesionalBean implements Serializable{
         		msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registrado", "Anestesiólogo "+profesi.getNombres());
         	
             try{
+            	refrescarProfesionals();
             	insertar();
+            	RequestContext.getCurrentInstance().execute("PF('dialogNuevo').hide()");
             }catch(ConstraintViolationException  e)
             {
             	msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", "Registro no insertado");
@@ -176,6 +182,10 @@ public class ProfesionalBean implements Serializable{
         {
         	msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", "Ingrese Profesión");  
         }
+        else if(profesi.getColegio().equals(""))
+        {
+        	msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", "Ingrese Codigo de Colegio Medico");  
+        }
         else
         {
         	editado = true;  
@@ -190,6 +200,8 @@ public class ProfesionalBean implements Serializable{
         		msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Editado", "Anestesiólogo "+profesiEditar.getNombres());
         	
             editar();
+            refrescarProfesionals();
+            RequestContext.getCurrentInstance().execute("PF('dialogEditar').hide()");
         }
 
         
@@ -215,6 +227,7 @@ public class ProfesionalBean implements Serializable{
         		msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Eliminado", "Anestesiólogo "+profesiNuevo.getNombres());
    
             eliminar();
+            refrescarProfesionals();
             
         } else {  
         	eliminado = false;  

@@ -19,11 +19,12 @@ import javax.persistence.UniqueConstraint;
 @Table(name = "profesional", catalog = "sro")
 public class Profesional implements java.io.Serializable {
 
+	private static final long serialVersionUID = 1L;
 	private Integer idProfesional;
-	private String colegio;
-	private String nombres;
-	private String apellidos;
-	private String tipo;
+	private String colegio="";
+	private String nombres="";
+	private String apellidos="";
+	private String tipo="";
 	private boolean eliminacion=true;
 	private Set<Reserva> reservasForProfesionalIdProfesional2 = new HashSet<Reserva>(0);
 	private Set<Reserva> reservasForProfesionalIdProfesional1 = new HashSet<Reserva>(0);
