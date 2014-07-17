@@ -8,35 +8,35 @@
 	xmlns:pe="http://primefaces.org/ui/extensions"
 	xmlns:o="http://omnifaces.org/ui">
 
-   <f:view>      
-      <h:head>
-      <h:outputScript library="js" name="utils.js" target="head"/>
-      
-	  <title>SIRO</title>
+<f:view>
+	<h:head>
+		<h:outputScript library="js" name="utils.js" target="head" />
 
-	  <link type="text/css" rel="stylesheet"
-		href="#{request.contextPath}/resources/css/estiloMant.css" />	
- 	 
+		<title>SRO</title>
 
-      </h:head>      
-      
-      <h:body >  
-                
-         
-         <div id="content">      
-				<p:ajaxStatus style="width:64px;height:64px;position:fixed;right:5px;bottom:5px;z-index:9999;">  
-				    <f:facet name="start">  
-				        <p:graphicImage value="/resources/images/loading.gif" />  
-				    </f:facet>  
+		<link type="text/css" rel="stylesheet"
+			href="#{request.contextPath}/resources/css/estiloMant.css" />
 
-				    <f:facet name="complete">  
-				        <h:outputText value="" />  
-				    </f:facet>  
-				</p:ajaxStatus>  
-               <ui:insert name="content"/>                     
-            <br/>
-         </div>    
-         
-      </h:body>      
-   </f:view>
+
+	</h:head>
+
+	<h:body>
+
+		<div id="content">
+			<p:ajaxStatus style="width:64px;height:64px;position:fixed;
+				right:5px;bottom:5px;z-index:9999;">
+				<f:facet name="start">
+					<p:graphicImage value="/resources/images/loading.gif" />
+				</f:facet>
+
+				<f:facet name="complete">
+					<h:outputText value="" />
+				</f:facet>
+			</p:ajaxStatus>
+			<ui:insert name="content" />
+			<br />
+		</div>
+
+	</h:body>
+</f:view>
 </html>
