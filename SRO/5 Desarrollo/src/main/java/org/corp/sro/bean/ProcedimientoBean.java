@@ -11,11 +11,10 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
-import org.corp.sro.domain.Procedimiento;
-import org.corp.sro.service.IProcedimientoService;
 import org.hibernate.exception.ConstraintViolationException;
 import org.primefaces.context.RequestContext;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.corp.sro.domain.Procedimiento;
+import org.corp.sro.service.IProcedimientoService;
 
 @ManagedBean(name="ProcedimientoBean")
 @ViewScoped
@@ -71,7 +70,7 @@ public class ProcedimientoBean implements Serializable{
 	public void editarEvent(){
 		if(getProcedNuevo()!=null){
 			setProcedEditar(procedimientoService.getProcedimientoById(getProcedNuevo().getIdProcedimiento()));
-			RequestContext.getCurrentInstance().execute("dialogEditar.show()");
+			RequestContext.getCurrentInstance().execute("PF('dialogEditar').show()");
 		}
 		else{
 			FacesMessage msg = null;  
@@ -80,16 +79,7 @@ public class ProcedimientoBean implements Serializable{
 		}
 	}
 
-	public void eliminarEvent(){
-		if(getProcedNuevo()!=null){
-			RequestContext.getCurrentInstance().execute("confirmation.show()");
-		}
-		else{
-			FacesMessage msg = null;  
-			msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", "Seleccione un procedimiento");  
-			FacesContext.getCurrentInstance().addMessage(null, msg);  
-		}
-	}
+
 	public void limpiarForms(){
 		proced=new Procedimiento();
 		procedNuevo=new Procedimiento();
@@ -130,6 +120,8 @@ public class ProcedimientoBean implements Serializable{
             
             try{
             	insertar();
+            	refrescarProcedimientos();
+            	RequestContext.getCurrentInstance().execute("PF('dialogNuevo').hide()");
             }catch(ConstraintViolationException  e)
             {
             	e.printStackTrace();
@@ -157,7 +149,9 @@ public class ProcedimientoBean implements Serializable{
         {
         	editado = true;  
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Editado", "Procedimiento "+procedEditar.getNombre());
+            RequestContext.getCurrentInstance().execute("PF('dialogEditar').hide()");
             editar();
+            refrescarProcedimientos();
         } 
           
         FacesContext.getCurrentInstance().addMessage(null, msg);  
@@ -173,6 +167,7 @@ public class ProcedimientoBean implements Serializable{
         	eliminado = true;  
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Eliminado", "Procedimiento "+ procedNuevo.getNombre());
             eliminar();
+            refrescarProcedimientos();
         } else {  
         	eliminado = false;  
             msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", "Seleccione un procedimiento");  
