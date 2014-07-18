@@ -1,5 +1,7 @@
 package org.corp.sro.domain;
 
+// Generated 02-ago-2013 21:51:03 by Hibernate Tools 4.0.0
+
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;

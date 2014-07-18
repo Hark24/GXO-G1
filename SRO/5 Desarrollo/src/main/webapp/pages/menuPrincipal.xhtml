@@ -35,16 +35,16 @@
 		  				
 		  				<div class="botonesPrincipales">
 		  				
-		  					<p:commandLink style="margin:50px 80px 20px 50px;" action="disponibilidad" ajax="false">
+		  					<p:commandLink style="margin:50px 80px 20px 50px;" action="disponibilidad?faces-redirect=true" ajax="false" >
 		  						<p:graphicImage library="images" name="horario.png" /> 
 		  					</p:commandLink>
 		  					
-		  					<p:commandLink style="margin:50px 80px 20px 50px;" action="historialReserva" ajax="false">
+		  					<p:commandLink style="margin:50px 80px 20px 50px;" action="historialReserva?faces-redirect=true" ajax="false">
 		  						<p:graphicImage library="images" name="historial.png" /> 
 		  					</p:commandLink>
 		  					
-		  					<p:commandButton styleClass="botonPeque" style="margin-left:55px;" value="Horario" ajax="false"/>
-							<p:commandButton styleClass="botonPeque" style="margin-left:140px;" value="Historial" ajax="false"/>  
+		  					<p:commandButton styleClass="botonPeque" style="margin-left:55px;" value="Horario" action="disponibilidad?faces-redirect=true" ajax="false"/>
+							<p:commandButton styleClass="botonPeque" style="margin-left:140px;" value="Historial" action="historialReserva?faces-redirect=true" ajax="false"/>  
 		  				
 		  				</div>
 		  			</div>
@@ -60,17 +60,15 @@
 				<p id="foot">REGISTRAR, EDITAR, ELIMINAR DATOS</p>
 			</f:facet>
 				 
-			<p:commandButton styleClass="botonPeque" value="Paciente" icon="ui-icon-circle-check" action="mantPaciente" ajax="false"/> 
-			<p:commandButton styleClass="botonPeque" value="Procedimiento" icon="ui-icon-circle-check" action="mantProcedimiento" ajax="false"/> 
-			<p:commandButton styleClass="botonPeque" value="Profesional" icon="ui-icon-circle-check" action="mantProfesional" ajax="false"/>
-			<p:commandButton styleClass="botonPeque" value="Sala" icon="ui-icon-circle-check" action="mantSala" ajax="false"/>	
+			<p:commandButton styleClass="botonPeque" value="Paciente" icon="ui-icon-circle-check" action="mantPaciente?faces-redirect=true" ajax="false" process="@this"/> 
+			<p:commandButton styleClass="botonPeque" value="Procedimiento" icon="ui-icon-circle-check" action="mantProcedimiento?faces-redirect=true" ajax="false"/> 
+			<p:commandButton styleClass="botonPeque" value="Profesional" icon="ui-icon-circle-check" action="mantProfesional?faces-redirect=true" ajax="false"/>
+			<p:commandButton styleClass="botonPeque" value="Sala" icon="ui-icon-circle-check" action="mantSala?faces-redirect=true" ajax="false"/>	
 
 		</p:panel>
 		
 	</h:form>
 	
-
 </h:body>
-
 
 </html>

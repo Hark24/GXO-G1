@@ -1,5 +1,7 @@
 package org.corp.sro.domain;
 
+// Generated 02-ago-2013 21:51:03 by Hibernate Tools 4.0.0
+
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Column;
@@ -28,10 +30,13 @@ import javax.persistence.Table;
 @Table(name = "sala", catalog = "sro")
 public class Sala implements java.io.Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Integer idSala;
-	//private String estado;
 	private String codSala;
-	private String descripcion;
+	private String descripcion="";
 	private boolean eliminacion=true;
 	private Set<Reserva> reservas = new HashSet<Reserva>(0);
 

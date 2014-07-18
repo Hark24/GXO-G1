@@ -1,0 +1,134 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:h="http://java.sun.com/jsf/html"
+   xmlns:f="http://java.sun.com/jsf/core"
+   xmlns:ui="http://java.sun.com/jsf/facelets"
+   xmlns:p="http://primefaces.org/ui"
+   xmlns:o="http://omnifaces.org/ui"
+   xmlns:pe="http://primefaces.org/ui/extensions"
+   xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+   template="/template/esqueleto.xhtml" >          
+
+   <ui:define name="content">  
+	<h:form id="form">
+	
+	
+		<p:growl id="growl" showDetail="true" life="3000" /> 
+	
+		<p:dialog id="dialogEditar" header="Editar" widgetVar="dialogEditar" modal="true" dynamic="true"
+			resizable="false" width="400" height="180" showEffect="fold" hideEffect="drop">
+
+			<h:panelGrid id="displayEditar" columns="2" cellpadding="4">
+				<h:outputText value="cie:" />
+				<h:inputText value="#{ProcedimientoBean.procedEditar.cie}" maxlength="20" onblur="value=limpiarString(value)">
+					<pe:keyFilter regEx="/[a-z0-9-]/i"></pe:keyFilter>
+				</h:inputText>
+
+				<h:outputText value="nombre:" />
+				<p:inputText value="#{ProcedimientoBean.procedEditar.nombre}" maxlength="20" onblur="value=limpiarString(value)">
+					<pe:keyFilter regEx="/[A-Z ]/i" />
+				</p:inputText>
+				
+				<h:outputText value="descripcion:" />
+				<p:inputText value="#{ProcedimientoBean.procedEditar.descripcion}" maxlength="20" onblur="value=limpiarString(value)">
+					<pe:keyFilter regEx="/[A-Z ]/i" />
+				</p:inputText>
+
+				<p:commandButton value="Editar"
+					actionListener="#{ProcedimientoBean.validarEditar}"
+					update=":form:datatablecampana, growl" />
+
+			</h:panelGrid>
+		</p:dialog>
+
+		<p:dialog id="dialogNuevo" header="Nuevo" widgetVar="dialogNuevo" modal="true" dynamic="true"
+			resizable="false" width="400" height="180" showEffect="fold" hideEffect="drop">
+
+			<h:panelGrid id="displayNuevo" columns="2" cellpadding="4">
+				<h:outputText value="cie:" />
+				<p:inputText value="#{ProcedimientoBean.proced.cie}" maxlength="20" onblur="value=limpiarString(value)">
+					<pe:keyFilter regEx="/[a-z0-9-]/i"></pe:keyFilter>
+				</p:inputText>
+				
+				<h:outputText value="nombre:" />
+				<p:inputText value="#{ProcedimientoBean.proced.nombre}" maxlength="20" onblur="value=limpiarString(value)">
+					<pe:keyFilter regEx="/[A-Z ]/i" />
+				</p:inputText>
+				
+				<h:outputText value="descripcion:" />
+				<p:inputText value="#{ProcedimientoBean.proced.descripcion}" maxlength="25" onblur="value=limpiarString(value)">
+					<pe:keyFilter regEx="/[A-Z ]/i" />
+				</p:inputText>
+
+				<p:commandButton value="Nuevo" update=":form:datatablecampana, growl"
+					actionListener="#{ProcedimientoBean.validarNuevo}"	 />
+			</h:panelGrid>
+		</p:dialog>
+		
+		
+		<p:panel>
+			
+			 <f:facet name="header" >
+			 	<ui:insert name="cabecera">
+					<ui:include src="/template/cabecera.xhtml">
+					</ui:include>
+			 	</ui:insert>
+            </f:facet>
+			
+			<div id="cuerpo">
+
+				<p:dataTable id="datatablecampana" var="c" widgetVar="dt"
+					value="#{ProcedimientoBean.procedimientos}" rowKey="#{c.cie}"
+					selection="#{ProcedimientoBean.procedNuevo}" selectionMode="single"
+					styleClass="datatable_style_general" paginator="true" rows="10"  
+		                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+		                 rowsPerPageTemplate="2,5,10" >
+		
+					<f:facet name="header">
+		
+							<p:commandButton id="viewNuevo" styleClass="botonPeque" value="Nuevo" icon="ui-icon-document"
+							update=":form:displayNuevo" oncomplete="PF('dialogNuevo').show()"  resetValues="true"
+							actionListener="#{ProcedimientoBean.limpiarForms}"/>
+		
+						<p:commandButton id="viewEditar" styleClass="botonPeque" value="Editar"
+							icon="ui-icon-search" update=":form:displayEditar, :form:growl" resetValues="true"
+							actionListener="#{ProcedimientoBean.editarEvent}" />
+							
+						<p:commandButton id="EliminarRegistro" styleClass="botonPeque" value="Eliminar" 
+							icon="ui-icon-closethick" process="@this,:form:datatablecampana" update=":form:datatablecampana,:form:growl"
+							actionListener="#{ProcedimientoBean.validarEliminar}">
+							<p:confirm header="Confirmación" message="¿Seguro desea eliminar el registro?" icon="ui-icon-alert" /> 
+						</p:commandButton>
+		
+					</f:facet>
+
+					<p:column styleClass="columna" headerText="CIE" filterBy="#{c.cie}"
+						footerText="CIE">
+						<h:outputText value="#{c.cie}" />
+					</p:column>
+					
+					<p:column styleClass="columna" headerText="Nombre" filterBy="#{c.nombre}"
+						footerText="Nombre">
+						<h:outputText value="#{c.nombre}" />
+					</p:column>
+					
+					<p:column styleClass="columna" headerText="Descripcion" filterBy="#{c.descripcion}"
+						footerText="Descripcion">
+						<h:outputText value="#{c.descripcion}" />
+					</p:column>
+					
+					<f:facet name="footer">
+					</f:facet>
+				</p:dataTable>
+			</div>
+
+		</p:panel>
+
+		<p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+	        <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+	        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+    	</p:confirmDialog> 
+
+	</h:form>
+</ui:define>
+
+</ui:composition>

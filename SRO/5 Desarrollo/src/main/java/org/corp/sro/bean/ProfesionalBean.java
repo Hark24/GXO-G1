@@ -11,11 +11,10 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
-import org.corp.sro.domain.Profesional;
-import org.corp.sro.service.IProfesionalService;
 import org.hibernate.exception.ConstraintViolationException;
 import org.primefaces.context.RequestContext;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.corp.sro.domain.Profesional;
+import org.corp.sro.service.IProfesionalService;
 
 @ManagedBean(name="ProfesionalBean")
 @ViewScoped
@@ -70,7 +69,7 @@ public class ProfesionalBean implements Serializable{
 	public void editarEvent(){
 		if(getProfesiNuevo()!=null){
 			setProfesiEditar(profesionalService.getProfesionalById(getProfesiNuevo().getIdProfesional()));
-			RequestContext.getCurrentInstance().execute("dialogEditar.show()");
+			RequestContext.getCurrentInstance().execute("PF('dialogEditar').show()");
 		}
 		else{
 			FacesMessage msg = null;  
@@ -81,7 +80,7 @@ public class ProfesionalBean implements Serializable{
 	
 	public void eliminarEvent(){
 		if(getProfesiNuevo()!=null){
-			RequestContext.getCurrentInstance().execute("confirmation.show()");
+			
 		}
 		else{
 			FacesMessage msg = null;  
@@ -130,6 +129,10 @@ public class ProfesionalBean implements Serializable{
         {
         	msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", "Ingrese Profesión");  
         }
+        else if(profesi.getColegio().equals(""))
+        {
+        	msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", "Ingrese Codigo de Colegio Medico");  
+        }
         else
         {
         	registrado = true;  
@@ -144,7 +147,9 @@ public class ProfesionalBean implements Serializable{
         		msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registrado", "Anestesiólogo "+profesi.getNombres());
         	
             try{
+            	refrescarProfesionals();
             	insertar();
+            	RequestContext.getCurrentInstance().execute("PF('dialogNuevo').hide()");
             }catch(ConstraintViolationException  e)
             {
             	msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", "Registro no insertado");
@@ -176,6 +181,10 @@ public class ProfesionalBean implements Serializable{
         {
         	msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", "Ingrese Profesión");  
         }
+        else if(profesi.getColegio().equals(""))
+        {
+        	msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", "Ingrese Codigo de Colegio Medico");  
+        }
         else
         {
         	editado = true;  
@@ -190,6 +199,8 @@ public class ProfesionalBean implements Serializable{
         		msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Editado", "Anestesiólogo "+profesiEditar.getNombres());
         	
             editar();
+            refrescarProfesionals();
+            RequestContext.getCurrentInstance().execute("PF('dialogEditar').hide()");
         }
 
         
@@ -215,6 +226,7 @@ public class ProfesionalBean implements Serializable{
         		msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Eliminado", "Anestesiólogo "+profesiNuevo.getNombres());
    
             eliminar();
+            refrescarProfesionals();
             
         } else {  
         	eliminado = false;  

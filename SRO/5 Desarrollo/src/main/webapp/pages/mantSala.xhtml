@@ -1,59 +1,52 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:h="http://java.sun.com/jsf/html"
+   xmlns:f="http://java.sun.com/jsf/core"
+   xmlns:ui="http://java.sun.com/jsf/facelets"
+   xmlns:p="http://primefaces.org/ui"
+   xmlns:o="http://omnifaces.org/ui"
+   xmlns:pe="http://primefaces.org/ui/extensions"
+   xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+   template="/template/esqueleto.xhtml" >          
 
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
-<h:head>
-	<link type="text/css" rel="stylesheet" href="#{request.contextPath}/resources/css/estiloMant.css"/> 
-</h:head>
-
-<h:body>
+   <ui:define name="content">  
 	<h:form id="form">
 	
 		<p:growl id="growl" showDetail="true" life="3000" /> 
 	
-		<p:dialog id="dialogEditar" header="Editar" widgetVar="dialogEditar"
+		<p:dialog id="dialogEditar" header="Editar" widgetVar="dialogEditar" modal="true" dynamic="true"
 			resizable="false" width="400" height="120" showEffect="fold" hideEffect="drop">
-			<p:messages id="messagesEditar" showDetail="true" autoUpdate="true"
-				closable="true" />
+
 			<h:panelGrid id="displayEditar" columns="2" cellpadding="4">
 		        
 		        <h:outputText value="Tipo de Sala: " />  
 		        <p:selectOneMenu value="#{SalaBean.salaEditar.descripcion}" >  
-		            <f:selectItem itemLabel="Select One" itemValue="" />  
+		            <f:selectItem itemLabel="Seleccione Uno" itemValue="" />  
 		            <f:selectItem itemLabel="Quirofano" itemValue="Quirofano" />  
 		            <f:selectItem itemLabel="Extraquirofano" itemValue="Extraquirofano" />  
 		        </p:selectOneMenu>
-				
-				<p:commandButton value="Editar"
+
+				<p:commandButton value="Editar" process="displayEditar,@this"
 					actionListener="#{SalaBean.validarEditar}"
-					update=":form:datatablecampana, growl" oncomplete="dialogEditar.hide();" />
+					update=":form:datatablecampana, growl"  />
 
 			</h:panelGrid>
 		</p:dialog>
 
-		<p:dialog id="dialogNuevo" header="Nuevo" widgetVar="dialogNuevo"
+		<p:dialog id="dialogNuevo" header="Nuevo" widgetVar="dialogNuevo" modal="true" dynamic="true"
 			resizable="false" width="400" height="120" showEffect="fold" hideEffect="drop">
 
-			<p:messages id="messagesNuevo" showDetail="true" autoUpdate="true"
-				closable="true" />
 
 			<h:panelGrid id="displayNuevo" columns="2" cellpadding="4">
 				
 				<h:outputText value="Tipo de Sala: " />  
-		        <p:selectOneMenu value="#{SalaBean.salaEditar.descripcion}" >  
-		            <f:selectItem itemLabel="Select One" itemValue="" />  
+		        <p:selectOneMenu value="#{SalaBean.salaNuevo.descripcion}" >  
+		            <f:selectItem itemLabel="Seleccione Uno" itemValue="" />  
 		            <f:selectItem itemLabel="Quirofano" itemValue="Quirofano" />  
 		            <f:selectItem itemLabel="Extraquirofano" itemValue="Extraquirofano" />  
 		        </p:selectOneMenu>
 		        
 				<p:commandButton value="Nuevo" update=":form:datatablecampana, growl"
-					actionListener="#{SalaBean.validarNuevo}"
-					oncomplete="dialogNuevo.hide();" />
+					actionListener="#{SalaBean.validarNuevo}"	process="displayNuevo,@this"/>
 			</h:panelGrid>
 		</p:dialog>
 		
@@ -61,13 +54,10 @@
 		<p:panel>
 			
 			 <f:facet name="header" >
-
-			 	<p:commandButton styleClass="back" value="Regresar" icon="ui-icon-circle-arrow-w" action="menuPrincipal" ajax="false"/>
-			 	<p id="par">LISTA DE SALAS DE OPERACIONES</p>
-			 	
-                <div id="reloj">
-					<p:clock pattern="HH:mm:ss - dd / MM / yyyy" />
-				</div>
+			 	<ui:insert name="cabecera">
+					<ui:include src="/template/cabecera.xhtml">
+					</ui:include>
+			 	</ui:insert>
             </f:facet>
 			
 			<div id="cuerpo">
@@ -82,20 +72,15 @@
 					<f:facet name="header">
 		
 						<p:commandButton id="viewNuevo" styleClass="botonPeque" value="Nuevo" icon="ui-icon-document"
-							update=":form:displayNuevo" oncomplete="dialogNuevo.show()" 
+							update=":form:displayNuevo" oncomplete="PF('dialogNuevo').show()"  resetValues="true"
 							actionListener="#{SalaBean.limpiarForms}"/>
-				
-						<p:commandButton id="viewEditar" styleClass="botonPeque" value="Editar"
-							icon="ui-icon-search" update=":form:displayEditar, :form:growl"
-							actionListener="#{SalaBean.editarEvent}" />
-						
-						<p:commandButton id="viewActualizarEstado" styleClass="botonPeque" value="Nuevo" icon="ui-icon-document" 
-							actionListener="#{SalaBean.refrescarSalas}"/>
-												
-						<p:commandButton id="EliminarRegistro" styleClass="botonPeque" value="Eliminar"
-							icon="ui-icon-closethick" update=":form:displayEditar, :form:growl"
-							actionListener="#{SalaBean.eliminarEvent}" />
 		
+						<p:commandButton id="EliminarRegistro" styleClass="botonPeque" value="Eliminar" 
+							icon="ui-icon-closethick" process="@this,:form:datatablecampana" update=":form:datatablecampana,:form:growl"
+							actionListener="#{SalaBean.validarEliminar}">
+							<p:confirm header="Confirmación" message="¿Seguro desea eliminar el registro?" icon="ui-icon-alert" /> 
+						</p:commandButton>					
+					
 					</f:facet>
 
 					<p:column styleClass="columna" headerText="Sala" filterBy="#{c.codSala}"
@@ -114,25 +99,14 @@
 			</div>
 
 		</p:panel>
-
-		<p:dialog id="modalDialog" header="CONFIRMACION" widgetVar="dlg2" modal="true" height="150" width="400" closable="false" resizable="false">  
-	    	<p:messages id="messages" showDetail="true" autoUpdate="true"
-					closable="false" /> 
-			<p:commandButton value="OK" onclick="dlg2.hide()"/> 
-		</p:dialog> 
-		<p:confirmDialog id="confirmDialog" message="¿Esta seguro de esta accion?"  
-                header="Eliminar Registro" severity="alert" widgetVar="confirmation">  
-                  
-        <p:commandButton id="confirm" value="Si" update=":form:datatablecampana, growl" oncomplete="confirmation.hide()"  
-                    actionListener="#{SalaBean.validarEliminar}" />  
-        <p:commandButton id="decline" value="No" onclick="confirmation.hide()" type="button" />   
-                  
+		
+		<p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+	        <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+	        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
     	</p:confirmDialog>  
 
 	</h:form>
 	
+</ui:define>
 
-</h:body>
-
-
-</html>
+</ui:composition>

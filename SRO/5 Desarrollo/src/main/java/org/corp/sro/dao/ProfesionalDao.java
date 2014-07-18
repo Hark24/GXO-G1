@@ -2,8 +2,8 @@ package org.corp.sro.dao;
 
 import java.util.List;
 
-import org.corp.sro.domain.Profesional;
 import org.hibernate.SessionFactory;
+import org.corp.sro.domain.Profesional;
 
 public class ProfesionalDao implements IProfesionalDao{
 	private SessionFactory sessionFactory;
