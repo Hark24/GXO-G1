@@ -11,9 +11,9 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
+import org.primefaces.context.RequestContext;
 import org.corp.sro.domain.Sala;
 import org.corp.sro.service.ISalaService;
-import org.primefaces.context.RequestContext;
 
 @ManagedBean(name="SalaBean")
 @ViewScoped
@@ -68,7 +68,7 @@ private static final long serialVersionUID = 1L;
 	public void editarEvent(){
 		if(getSalaNuevo()!=null){
 			setSalaEditar(salaService.getSalaById(getSalaNuevo().getIdSala()));
-			RequestContext.getCurrentInstance().execute("dialogEditar.show()");
+			RequestContext.getCurrentInstance().execute("PF('dialogEditar').show()");
 		}
 		else{
 			FacesMessage msg = null;  
@@ -79,7 +79,7 @@ private static final long serialVersionUID = 1L;
 
 	public void eliminarEvent(){
 		if(getSalaNuevo()!=null){
-			RequestContext.getCurrentInstance().execute("confirmation.show()");
+
 		}
 		else{
 			FacesMessage msg = null;  
@@ -100,7 +100,7 @@ private static final long serialVersionUID = 1L;
 	}
 	
 	public void insertar(){
-		salaService.addSala(getSala());
+		salaService.addSala(getSalaNuevo());
 		refrescarSalas();
 	}
 	
@@ -120,14 +120,16 @@ private static final long serialVersionUID = 1L;
         FacesMessage msg = null;  
         boolean registrado = false;  
          
-        if(sala.getDescripcion().equals(""))
+        if(salaNuevo.getDescripcion().equals(""))
         {
         	msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", "Descripcion de Sala incorrecto");  
         }
         else
         {
         	registrado = true;  
+        	RequestContext.getCurrentInstance().execute("PF('dialogNuevo').hide()");
             insertar();
+            refrescarSalas();
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registrado", "Sala "+Integer.toString(sala.getIdSala()));
         } 
           
@@ -140,7 +142,7 @@ private static final long serialVersionUID = 1L;
         FacesMessage msg = null;  
         boolean editado = false;  
           
-        if(salaNuevo==null){  
+        if(sala==null){  
             msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", "Seleccione una sala");  
         } 
         else if(salaEditar.getDescripcion().equals(""))
@@ -150,7 +152,9 @@ private static final long serialVersionUID = 1L;
         else
         {
         	editado = true;  
+        	RequestContext.getCurrentInstance().execute("PF('dialogEditar').hide()");
             editar();
+            refrescarSalas();
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Editado", "Sala "+Integer.toString(sala.getIdSala()));
         } 
           
@@ -167,6 +171,7 @@ private static final long serialVersionUID = 1L;
         	eliminado = true;  
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Eliminado", "Sala "+Integer.toString(salaNuevo.getIdSala()));
             eliminar();
+            refrescarSalas();
         } else {  
         	eliminado = false;  
             msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Error", "Seleccione una sala");  

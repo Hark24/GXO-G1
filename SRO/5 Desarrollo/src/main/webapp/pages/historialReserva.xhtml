@@ -13,32 +13,8 @@
 
 <h:body>
 
-	<p:layout fullPage="true" id="layout" widgetVar="main" styleClass="layout">  
+	<p:layout fullPage="true" id="layout" widgetVar="main" styleClass="layout"> 		
 		
-		<p:layoutUnit position="west" size="300" header="Opciones" resizable="true" closable="true" collapsible="true" effect="drop">   
-			
-			<h:form id="formBotones" >
-		        	
-		    	<p:panel > 
-
-						<p:commandButton styleClass="botonPeque" value="AGREGAR PACIENTE"
-							update=":form:datatablecampana, :form:growl, :form:displayEditar, :form:displayNuevo"
-							oncomplete="dialogPacienteNuevo.show();" />
-								
-						<p:commandButton styleClass="botonPeque"  value="AGREGAR PROCEDIMIENTO"
-							update=":form:datatablecampana, :form:growl, :form:displayEditar, :form:displayNuevo"
-							oncomplete="dialogProcNuevo.show();"/>
-								
-						<p:commandButton styleClass="botonPeque"  value="AGREGAR SALA"
-							update=":form:datatablecampana, :form:growl, :form:displayEditar, :form:displayNuevo"
-							oncomplete="dialogSalaNuevo.show();"/>
-						
-						<p:commandButton styleClass="botonPeque"  value="AGREGAR PROFESIONAL"
-							update=":form:datatablecampana, :form:growl, :form:displayEditar, :form:displayNuevo"
-							oncomplete="dialogProfNuevo.show();"/>
-				</p:panel>
-			</h:form>	
-		</p:layoutUnit> 
 		
 		<p:layoutUnit position="east" size="300" header="Detalle Operación" resizable="true" closable="true" collapsible="true" effect="drop">   
 			
@@ -389,21 +365,14 @@
 										<p:ajax event="dateSelect" listener="#{ReservaBean.refrescarByDay}" update=":form:datatablecampana" /> 
 									</p:calendar>
 							
-									<p:commandButton id="viewNuevo" styleClass="botonPeque" value="Nuevo" icon="ui-icon-document"
-										update=":form:displayNuevo" oncomplete="dialogNuevo.show()"
-										actionListener="#{ReservaBean.limpiarForms}"/>
-					
-									<p:commandButton id="viewEditar" styleClass="botonPeque" value="Editar"
-										icon="ui-icon-search" update=":form:displayEditar, :form:growl"
-										actionListener="#{ReservaBean.editarEvent}" />
-										
 									<p:commandButton id="EliminarRegistro" styleClass="botonPeque" value="Eliminar"
-										icon="ui-icon-closethick" update=":form:displayEditar, :form:growl"
-										actionListener="#{ReservaBean.eliminarEvent}" />
+										icon="ui-icon-closethick" update=":form:displayEditar, :form:growl,datatablecampana" process="datatablecampana,@this"
+										actionListener="#{ReservaBean.eliminar}" >
 										
-									<p:commandButton id="HistorialTotal" styleClass="botonPeque" value="HistorialTotal"
-										icon="ui-icon-closethick" update=":form:datatablecampana"
-										actionListener="#{ReservaBean.reservasTotales}"/>
+										<p:confirm header="Confirmación" message="¿Seguro desea eliminar el registro?" icon="ui-icon-alert" /> 
+										
+									</p:commandButton>
+										
 										
 									<h:commandLink>  
 							            <p:commandButton id="xlsExport" styleClass="botonPeque" value="excel"/>  
@@ -558,19 +527,10 @@
 
 		</p:layout>
 			
-					<p:dialog id="modalDialog" header="CONFIRMACION" widgetVar="dlg2" modal="true" height="150" width="400" closable="false" resizable="false">  
-				    	<p:messages id="messages" showDetail="true" autoUpdate="true"
-								closable="false" /> 
-						<p:commandButton value="OK" onclick="dlg2.hide()"/> 
-					</p:dialog> 
-					<p:confirmDialog id="confirmDialog" message="¿Esta seguro de esta accion?"  
-			                header="Eliminar Registro" severity="alert" widgetVar="confirmation">  
-			                  
-			        <p:commandButton id="confirm" value="Si" update=":form:datatablecampana, :form:growl" oncomplete="confirmation.hide()"  
-			                    actionListener="#{ReservaBean.eliminar}" />  
-			        <p:commandButton id="decline" value="No" onclick="confirmation.hide()" type="button" />   
-			                  
-			    	</p:confirmDialog>  
+		<p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+	        <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+	        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+    	</p:confirmDialog>
 	</h:body>
 
 

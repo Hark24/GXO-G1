@@ -3,8 +3,8 @@ package org.corp.sro.dao;
 import java.util.Date;
 import java.util.List;
 
-import org.corp.sro.domain.Sala;
 import org.hibernate.SessionFactory;
+import org.corp.sro.domain.Sala;
 
 public class SalaDao implements ISalaDao{
 

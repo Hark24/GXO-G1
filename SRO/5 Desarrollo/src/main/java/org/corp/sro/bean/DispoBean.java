@@ -4,19 +4,20 @@ import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 
-import org.corp.sro.domain.Reserva;
-import org.corp.sro.service.IReservaService;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultScheduleEvent;
 import org.primefaces.model.DefaultScheduleModel;
 import org.primefaces.model.ScheduleEvent;
 import org.primefaces.model.ScheduleModel;
+import org.corp.sro.domain.Reserva;
+import org.corp.sro.service.IReservaService;
 
 @ManagedBean(name="DispoBean")
 @ViewScoped
@@ -24,13 +25,14 @@ public class DispoBean implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 
+
     @ManagedProperty("#{ReservaBean}")
     ReservaBean reservaBean;
 
 	private ScheduleModel eventModel;
     private String lastCss;
     private ScheduleEvent event = new DefaultScheduleEvent();
-
+    
     List<Reserva> reservas;
 
     public ReservaBean getReservaBean() {
@@ -74,6 +76,14 @@ public class DispoBean implements Serializable{
 		eventModel = new DefaultScheduleModel();
         refrescarReservasVigentes();
         reservaBean.setDispoBean(this);
+		/*eventModel.addEvent(new DefaultScheduleEvent("Champions League Match", previousDay8Pm(), previousDay11Pm(),"emp1"));
+        eventModel.addEvent(new DefaultScheduleEvent("1", today1Pm(), today6Pm(),"emp1"));
+        eventModel.addEvent(new DefaultScheduleEvent("2", today1Pm(), today6Pm(),"emp2"));  
+        eventModel.addEvent(new DefaultScheduleEvent("3", today1Pm(), today6Pm(),"emp3"));
+        eventModel.addEvent(new DefaultScheduleEvent("4", today1Pm(), today6Pm(),"emp4"));
+        eventModel.addEvent(new DefaultScheduleEvent("Breakfast at Tiffanys", nextDay9Am(), nextDay11Am(),"emp1"));
+                                                                                                                       */
+		
 	}
 
     public void refrescarReservasVigentes()
@@ -112,6 +122,7 @@ public class DispoBean implements Serializable{
 
     }
 	
+	
 	 private Calendar today() {  
         Calendar calendar = Calendar.getInstance();  
         calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), 0, 0, 0);
@@ -119,7 +130,12 @@ public class DispoBean implements Serializable{
         return calendar;
     }  
       
-    public TimeZone getTimeZone(){
-         return Calendar.getInstance().getTimeZone();
+
+     public TimeZone getTimeZone(){
+    	 return Calendar.getInstance().getTimeZone();
      }
+
+      
+
+
 }

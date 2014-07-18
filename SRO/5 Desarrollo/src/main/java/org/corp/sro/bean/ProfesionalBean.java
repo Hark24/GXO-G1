@@ -11,11 +11,10 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
-import org.corp.sro.domain.Profesional;
-import org.corp.sro.service.IProfesionalService;
 import org.hibernate.exception.ConstraintViolationException;
 import org.primefaces.context.RequestContext;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.corp.sro.domain.Profesional;
+import org.corp.sro.service.IProfesionalService;
 
 @ManagedBean(name="ProfesionalBean")
 @ViewScoped
@@ -70,7 +69,7 @@ public class ProfesionalBean implements Serializable{
 	public void editarEvent(){
 		if(getProfesiNuevo()!=null){
 			setProfesiEditar(profesionalService.getProfesionalById(getProfesiNuevo().getIdProfesional()));
-			RequestContext.getCurrentInstance().execute("dialogEditar.show()");
+			RequestContext.getCurrentInstance().execute("PF('dialogEditar').show()");
 		}
 		else{
 			FacesMessage msg = null;  
@@ -81,7 +80,7 @@ public class ProfesionalBean implements Serializable{
 	
 	public void eliminarEvent(){
 		if(getProfesiNuevo()!=null){
-			RequestContext.getCurrentInstance().execute("confirmation.show()");
+			
 		}
 		else{
 			FacesMessage msg = null;  

@@ -16,24 +16,24 @@ import org.slf4j.LoggerFactory;
 @FacesConverter("pacienteConverter")
 public class PacienteConverter implements Converter{
 
-    private static final Logger LOG = LoggerFactory.getLogger(PacienteConverter.class);
-     
-    @Override
+	private static final Logger LOG = LoggerFactory.getLogger(PacienteConverter.class);
+	 
+	@Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
        
-        
-       LOG.trace("String value: {}", value);
+		
+	   LOG.trace("String value: {}", value);
        
        if(value=="0"){
-           
-           return new Paciente("Seleccionar",false);
+    	   
+    	   return new Paciente("Seleccionar",false);
        }
         
         return getObjectFromUIPickListComponent(component,value);
     }
  
     @SuppressWarnings("unused")
-    @Override
+	@Override
     public String getAsString(FacesContext context, UIComponent component, Object object) {
         String string="";
         LOG.trace("Object value: {}", object);
@@ -45,13 +45,13 @@ public class PacienteConverter implements Converter{
         }else{
             try{
                
-                Paciente c= (Paciente)object;
-                
-                if(c.getHistClinica()!=null)
-                    string = c.getHistClinica().toString();
+            	Paciente c= (Paciente)object;
+            	
+            	if(c.getHistClinica()!=null)
+            		string = c.getHistClinica().toString();
             }catch(ClassCastException cce){
-                                
-                return "";
+            	            	
+            	return "";
             }
         }
         return string;
@@ -67,12 +67,12 @@ public class PacienteConverter implements Converter{
              
             return motor;
         }catch(ClassCastException cce){
-            System.out.println(cce.getMessage());
-            throw new ConverterException();
+        	System.out.println(cce.getMessage());
+        	throw new ConverterException();
             
         }catch(NumberFormatException nfe){
-            System.out.println(nfe.getMessage());
-            throw new ConverterException();
+        	System.out.println(nfe.getMessage());
+        	throw new ConverterException();
            
         }
     }
