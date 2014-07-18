@@ -6,34 +6,33 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
-<h:head>
-	<link type="text/css" rel="stylesheet" href="#{request.contextPath}/resources/tema.css"/>
-	<link type="text/css" rel="stylesheet" href="#{request.contextPath}/resources/estiloDispo.css"/>
-
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+<h:head>	
+	<h:outputScript library="js" name="utils.js" target="head"/>
 	<style type="text/css">
 	
-		.select .fc-event-skin {
+		.select .fc-event-inner {
     		background: gray;
 		}
 		
-		.sala0 .fc-event-skin {
+		.sala0 .fc-event-inner {
     		background: #BAA9AF;
     		color:black;
 		}
-		.sala1 .fc-event-skin {
+		.sala1 .fc-event-inner {
 		   background: #D9D3C5;
 		   color:black;
 		}
-		.sala2 .fc-event-skin {
+		.sala2 .fc-event-inner {
 		   background: #B8C6CC;
 		   color:black;
 		}
-		.sala3 .fc-event-skin {
+		.sala3 .fc-event-inner {
 		   background: #BDC9BD;
 		   color:black;
 		}
-		.sala4 .fc-event-skin {
+		.sala4 .fc-event-inner {
 		   background: #E3E1CC;
 		   color:black;
 		}
@@ -47,7 +46,7 @@
 	</style>
 
 	<style type="text/css">
-		.schedule .fc-event-skin {
+		.schedule .fc-event-inner {
 		    background: #96A683;
 		    font-size:20px;
 		    font-family:calibri;
@@ -99,8 +98,8 @@
 	<h:form id="form">
 		<p:growl id="growl" showDetail="true" />
 
-      <p:dialog id="dialogEditar" header="Editar" widgetVar="dialogEditar"
-			resizable="false" width="500" height="600" showEffect="clip"
+      <p:dialog id="dialogEditar" header="Editar" widgetVar="dialogEditar" modal="true" dynamic="true"
+			resizable="false" width="500" height="600" showEffect="clip" fitViewport="true"
 			hideEffect="fold">
 			<p:messages id="messagesEditar" showDetail="true" autoUpdate="true"
 				closable="true" />
@@ -160,10 +159,14 @@
 						<h:outputText value="" />
 						
 						<h:outputText value="Horas: "  styleClass="columna" />    
-						<p:inputText value="#{DispoBean.reservaBean.durEstHorasEditar}" size="3" styleClass="columna" />
+						<p:spinner value="#{DispoBean.reservaBean.durEstHorasEditar}" size="3" styleClass="columna" min="0" max="15" >
+							
+						</p:spinner>
 						
 						<h:outputText value="Minutos"  styleClass="columna" />  
-						<p:inputText value="#{DispoBean.reservaBean.durEstMinEditar}" size="3" styleClass="columna" />
+						<p:spinner value="#{DispoBean.reservaBean.durEstMinEditar}" size="3" styleClass="columna" min="0" max="59">
+							
+						</p:spinner>
 						
 						<h:outputText value="Aprobado:"  styleClass="columna" />  
 				        <p:selectBooleanCheckbox value="#{DispoBean.reservaBean.reservaEditar.aprobado}" styleClass="columna" />
@@ -175,30 +178,38 @@
 				        <p:selectBooleanCheckbox value="#{DispoBean.reservaBean.reservaEditar.cancelado}" styleClass="columna" />    
 		
 				        <h:outputText value="Compañía:"  styleClass="columna" />
-						<p:inputText value="#{DispoBean.reservaBean.reservaEditar.compania}"  styleClass="columna" />
+						<p:inputText value="#{DispoBean.reservaBean.reservaEditar.compania}"  styleClass="columna" maxlength="20" onblur="value=limpiarString(value)" >
+							<pe:keyFilter regEx="/[A-Z ]/i" />
+						</p:inputText>
 		
 				        <h:outputText value="Ubicación:"  styleClass="columna" />
-						<p:inputText value="#{DispoBean.reservaBean.reservaEditar.ubicacion}"  styleClass="columna" />
+						<p:inputText value="#{DispoBean.reservaBean.reservaEditar.ubicacion}"  styleClass="columna" maxlength="20" onblur="value=limpiarString(value)" >
+							<pe:keyFilter regEx="/[A-Z ]/i" />
+						</p:inputText>
 						
 						<h:outputText value="Duración Real:"  styleClass="columna" /> 
 						<h:outputText value="" />
 								
 						<h:outputText value="Horas: "  styleClass="columna" />    
-						<p:inputText value="#{ReservaBean.durHorasEditar}" size="3" styleClass="columna" />
+						<p:spinner value="#{ReservaBean.durHorasEditar}" size="3" styleClass="columna" min="0" max="15">
+
+						</p:spinner>
 								
 						<h:outputText value="Minutos"  styleClass="columna" />  
-						<p:inputText value="#{ReservaBean.durMinEditar}" size="3" styleClass="columna" />
+						<p:spinner value="#{ReservaBean.durMinEditar}" size="3" styleClass="columna" min="0" max="59" >
+
+						</p:spinner>
 		
 					<p:commandButton value="Confirmar"
 						actionListener="#{DispoBean.reservaBean.procesarEditarReprogramar}"
-						update=":form:growl" oncomplete="dialogEditar.hide();myschedule.update();" />
+						update=":form:growl" oncomplete="PF('myschedule').update();" />
 		
 				</h:panelGrid>
 			</p:scrollPanel>
 		</p:dialog>
 	
-		<p:dialog id="dialogNuevo" header="Nuevo" widgetVar="dialogNuevo"
-			resizable="false" width="500" height="600" showEffect="clip"
+		<p:dialog id="dialogNuevo" header="Nuevo" widgetVar="dialogNuevo" dynamic="true"
+			resizable="false" width="500" height="600" showEffect="clip" modal="true" fitViewport="true"
 			hideEffect="fold">
 	
 			<p:messages id="messagesNuevo" showDetail="true" autoUpdate="true"
@@ -254,9 +265,9 @@
 					<h:outputText styleClass="columna" value="Duración Aprox" />
 					<h:outputText styleClass="columna"  value="" />
 					<h:outputText styleClass="columna"  value="Horas:" />
-					<p:inputText styleClass="columna"  value="#{DispoBean.reservaBean.durEstHoras}" size="3"/>
+					<p:spinner styleClass="columna"  value="#{DispoBean.reservaBean.durEstHoras}" size="3" min="0" max="15"/>
 					<h:outputText styleClass="columna"  value="Minutos:" />
-					<p:inputText styleClass="columna"  value="#{DispoBean.reservaBean.durEstMin}" size="3"/>
+					<p:spinner styleClass="columna"  value="#{DispoBean.reservaBean.durEstMin}" size="3" min="0" max="59"/>
 					
 					<h:outputText styleClass="columna"  value="Aprobado:" />  
 			        <p:selectBooleanCheckbox styleClass="columna" value="#{DispoBean.reservaBean.reserva.aprobado}"/>
@@ -268,20 +279,24 @@
 			        <p:selectBooleanCheckbox value="#{DispoBean.reservaBean.reserva.cancelado}"/>    
 			        
 			        <h:outputText styleClass="columna"  value="Compañía:" />
-					<p:inputText styleClass="columna"  value="#{DispoBean.reservaBean.reserva.compania}" />
+					<p:inputText styleClass="columna"  value="#{DispoBean.reservaBean.reserva.compania}"  maxlength="20" onblur="value=limpiarString(value)">
+						<pe:keyFilter regEx="/[A-Z ]/i" />
+					</p:inputText>
 			        
 			        <h:outputText styleClass="columna"  value="Ubicación:" />
-					<p:inputText styleClass="columna"  value="#{DispoBean.reservaBean.reserva.ubicacion}" />
+					<p:inputText styleClass="columna"  value="#{DispoBean.reservaBean.reserva.ubicacion}"  maxlength="20" onblur="value=limpiarString(value)">
+						<pe:keyFilter regEx="/[A-Z ]/i" />
+					</p:inputText>
 					
 					<p:commandButton styleClass="columna"  value="Confirmar" update=":form:growl"
 						actionListener="#{DispoBean.reservaBean.procesarInsertar}"
-						oncomplete="dialogNuevo.hide();myschedule.update();" />
+						oncomplete="PF('myschedule').update();" />
 				</h:panelGrid>
 			</p:scrollPanel>
 		</p:dialog>
 		
-		<p:dialog id="dialogPacienteNuevo" header="Nuevo Paciente" widgetVar="dialogPacienteNuevo"
-			resizable="false" width="450" height="230" showEffect="fold" hideEffect="drop">
+		<p:dialog id="dialogPacienteNuevo" header="Nuevo Paciente" widgetVar="dialogPacienteNuevo" dynamic="true"
+			resizable="false" width="450" height="230" showEffect="fold" hideEffect="drop" modal="true" fitViewport="true">
 
 			<h:panelGrid id="displayPacienteNuevo" columns="2" cellpadding="4">
 				<h:outputText value="Historia Clínica:"  styleClass="columna" />
@@ -299,12 +314,12 @@
 	
 				<p:commandButton value="Nuevo"  update=":form:growl, :form:displayNuevo"
 					actionListener="#{DispoBean.reservaBean.actualizarInsertarPaciente}"
-					 oncomplete="dialogPacienteNuevo.hide();"/>
+					 oncomplete=""/>
 			</h:panelGrid>
 		</p:dialog>
 		
-		<p:dialog id="dialogProcNuevo" header="Nuevo" widgetVar="dialogProcNuevo"
-			resizable="false" width="400" height="180" showEffect="fold" hideEffect="drop">
+		<p:dialog id="dialogProcNuevo" header="Nuevo" widgetVar="dialogProcNuevo" modal="true" dynamic="true"
+			resizable="false" width="400" height="180" showEffect="fold" hideEffect="drop" fitViewport="true"> 
 
 			<h:panelGrid id="displayProcNuevo" columns="2" cellpadding="4">
 				<h:outputText value="CIE:" styleClass="columna" />
@@ -318,17 +333,16 @@
 
 				<p:commandButton value="Nuevo" update=":form:growl, :form:displayNuevo"
 					actionListener="#{DispoBean.reservaBean.actualizarInsertarProc}"
-					oncomplete="dialogProcNuevo.hide();" />
+					oncomplete="PF('dialogProcNuevo').hide();" />
 			</h:panelGrid>
 		</p:dialog>
 		
 		<p:panel styleClass="centro">
-			<f:facet name="header" >
-			
-			 	<p:commandButton styleClass="back" value="Regresar" icon="ui-icon-circle-arrow-w" action="menuPrincipal" ajax="false"/>			 	<div id="reloj">
-				<br/>
-				<p:clock pattern="HH:mm:ss - dd / MM / yyyy" />
-				</div>
+			<f:facet name="header" >			
+			 		<ui:insert name="cabecera">
+					<ui:include src="/template/cabecera.xhtml">
+					</ui:include>
+			 	</ui:insert>
             </f:facet>
 		
 		</p:panel>
@@ -340,30 +354,25 @@
                
                 
                 <p:commandButton id="viewNuevo" styleClass="botonPeque" value="Nuevo" icon="ui-icon-document"
-                                 update=":form:displayNuevo" oncomplete="dialogNuevo.show()"
+                                 update=":form:displayNuevo" oncomplete="PF('dialogNuevo').show()"
                                  actionListener="#{DispoBean.reservaBean.limpiarForms}"/>
 
                 <p:commandButton id="actualizar" styleClass="botonPeque" value="Actualizar" icon="ui-icon-document"
                                  actionListener="#{DispoBean.refrescarReservasVigentes}"
-                                 oncomplete="myschedule.update()"/>
+                                 oncomplete="PF('myschedule').update()"/>
 
                 <p:commandButton id="viewEditar" styleClass="botonPeque" value="Editar"
                                  icon="ui-icon-search" update=":form:displayEditar"
                                  actionListener="#{DispoBean.reservaBean.editarEvent}"
-                                 oncomplete="dialogEditar.show()" />
+                                 oncomplete="PF('dialogEditar').show()" />
 
-                <p:commandButton id="EliminarRegistro" styleClass="botonPeque" value="Eliminar"
-                                 icon="ui-icon-closethick" update=":form:displayEditar"
-                                 onclick="confirmation.show()"  />
+                 <p:commandButton id="EliminarRegistro" styleClass="botonPeque" value="Eliminar" 
+					icon="ui-icon-closethick" process="@this,:form:schedule" update=":form:schedule,:form:growl"
+					actionListener="#{DispoBean.reservaBean.eliminar}">
+							<p:confirm header="Confirmación" message="¿Seguro desea eliminar el registro?" icon="ui-icon-alert" /> 
+				</p:commandButton>
                                  
-                <p:commandButton styleClass="botonPeque" value="AGREGAR PACIENTE"
-							update=":form:growl, :form:displayEditar, :form:displayNuevo"
-							oncomplete="dialogPacienteNuevo.show();" />
-								
-				<p:commandButton styleClass="botonPeque"  value="AGREGAR PROCEDIMIENTO"
-					update=":form:growl, :form:displayEditar, :form:displayNuevo"
-					oncomplete="dialogProcNuevo.show();"/>
-
+             
             </f:facet>
         </p:panel>
 
@@ -372,22 +381,19 @@
         <p:panel width="1200">
             <div id="cuerpo">
                 <p:schedule id="schedule" styleClass="horario" value="#{DispoBean.eventModel}" widgetVar="myschedule" locale="es" draggable="false" resizable="false"
-                        view="agendaDay">
+                        view="agendaDay" timeZone="#{DispoBean.timeZone}">
 
                     <p:ajax event="dateSelect" listener="#{DispoBean.onDateSelect}"  />
-                    <p:ajax event="eventSelect" listener="#{DispoBean.onEventSelect}"  oncomplete="myschedule.update()"/>
+                    <p:ajax event="eventSelect" listener="#{DispoBean.onEventSelect}"  oncomplete="PF('myschedule').update()"/>
 
                 </p:schedule>
             </div>
         </p:panel>
-        <p:confirmDialog id="confirmDialog" message="¿Esta seguro de esta accion?"
-                         header="Eliminar Registro" severity="alert" widgetVar="confirmation">
-
-            <p:commandButton id="confirm" value="Si" update="growl" oncomplete="confirmation.hide();myschedule.update();"
-                             actionListener="#{DispoBean.reservaBean.eliminar}" />
-            <p:commandButton id="decline" value="No" onclick="confirmation.hide()" type="button" />
-
-        </p:confirmDialog>
+        
+        <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">  
+	        <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
+	        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
+    	</p:confirmDialog>  
 
 
     </h:form>

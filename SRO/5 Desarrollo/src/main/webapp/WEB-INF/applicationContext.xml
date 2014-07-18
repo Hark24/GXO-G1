@@ -2,8 +2,10 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:tx="http://www.springframework.org/schema/tx"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd">
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/tx
+						http://www.springframework.org/schema/tx/spring-tx-3.1.xsd">
 
 	<!-- Beans Declaration -->
 	<bean id="Profesional" class="org.corp.sro.domain.Profesional" />
@@ -60,11 +62,14 @@
 		<property name="dataSource" ref="dataSource" />
 		<property name="annotatedClasses">
 			<list>
+			
 				<value>org.corp.sro.domain.Profesional</value>
 				<value>org.corp.sro.domain.Paciente</value>
 				<value>org.corp.sro.domain.Procedimiento</value>
 				<value>org.corp.sro.domain.Reserva</value>
 				<value>org.corp.sro.domain.Sala</value>
+				
+				
 			</list>
 		</property>
 		<property name="hibernateProperties">
@@ -75,10 +80,8 @@
 		</property>
 	</bean>
 
-	<!-- Enable the configuration of transactional behavior based on annotations -->
 	<tx:annotation-driven transaction-manager="txManager" />
 
-	<!-- Transaction Manager is defined -->
 	<bean id="txManager"
 		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
 		<property name="sessionFactory" ref="SessionFactory" />
